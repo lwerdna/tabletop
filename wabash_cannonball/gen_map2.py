@@ -11,11 +11,11 @@ margin_x = 9
 margin_y = 97
 
 hex_r = 54.0
-hex_outline_width = 4
+hex_outline_width = 1
 
 save_ink = True
 
-color_default = (0xee/255.0, 0xf7/255.0, 0xfa/255.0)
+color_default = (1, 1, 1)
 #color_default = (0, 0, 0)
 #color_default = (.8, .8, .8)
 color_black = (0, 0, 0)
@@ -79,17 +79,14 @@ def coords2key(x,y):
 # global hex data
 ###############################################################################
 
+# default values for all hexes
 lookup = {}
 for x in range(19):
 	for y in range(21):
 		key = coords2key(x,y)
-		lookup[key] = {}
-		lookup[key]['visible'] = True
-		lookup[key]['fill'] = color_white
-		lookup[key]['stroke'] = color_black
-		lookup[key]['text'] = None
-		lookup[key]['header'] = None
-		lookup[key]['text_color'] = color_black
+		lookup[key] = { 'visible': True, 'fill': color_white, \
+			'stroke': color_black, 'text': None, 'header': None, \
+			'footer': None, 'text_color': color_black }
 
 # remove Lake Michigan
 blanks = ['A1', 'B2', 'C1', 'D2' ]
@@ -111,49 +108,58 @@ names = ['Chicago', 'Indianapolis', 'South Bend', 'Fort Wayne', 'Cincinnati', \
   'Toledo', 'Columbus', 'Ashland', 'Cleveland', 'Youngstown', 'Charleston', \
   'Clarksburg', 'Roanoake', 'Buffalo', 'Altoona', 'Lynchburg', 'Martinsburg', \
   'Syracuse', 'Harrisburg', 'Richmond', 'Ithaca', 'Binghampton', 'Albany']
-header = ['3/7/7', '1/2/4', '2/1/3', '1/1/3', '2/2/4', '2/1/2', '1/1/2', '2/2/3', '1/2/4', '2/1/2', '3/2/3', '2/1/2', '2/1/2', '2/3/5', '2/1/2', '1/1/2', '2/1/2', '2/1/3', '2/1/2', '2/2/3', '2/1/2', '2/1/2', '2/1/3']
-for i in range(len(cities)):
-	lookup[cities[i]]['text'] = names[i]
-	lookup[cities[i]]['header'] = header[i]
-	lookup[cities[i]]['type'] = 'city'
+costs = [3, 1, 2, 1, 2, 2, 1, 2, 1, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2 +1 +2]
+bonuses = ['+7 +0', '+2 +2', '+1 +2', '+1 +2', '+2 +2', '+1 +1', '+1 +1', '+2 +1', '+2 +2', '+1 +1', '+2 +1', '+1 +1', '+1 +1', '+3 +2', '+1 +1', '+1 +1', '+1 +1', '+1 +2', '+1 +1', '+2 +1', '+1 +1', '+1 +1', '+1 +2']
+for i,city in enumerate(cities):
+	lookup[city]['text'] = names[i]
+	lookup[city]['fill'] = color_city
+	lookup[city]['header'] = '-%dx' % costs[i]
+	lookup[city]['footer'] = bonuses[i]
+lookup['H4']['fill'] = color_magenta
 
 # 2/6 start
-cities = ['G19', 'L18', 'O17', 'S17']
-names = ['NY Central', 'Pennsylvania', 'Balt. & Ohio', 'Chess. & Ohio']
-for i,c in enumerate(cities):
-	lookup[c]['text'] = names[i]
-	lookup[c]['type'] = 'city'
+lookup['G19']['text'] = 'NY Central'
+lookup['G19']['fill'] = color_green
+lookup['L18']['text'] = 'Pennsylvania'
+lookup['L18']['fill'] = color_red
+lookup['O17']['text'] = 'Balt. & Ohio'
+lookup['O17']['fill'] = color_blue
+lookup['S17']['text'] = 'Ches. & Ohio'
+lookup['S17']['fill'] = color_yellow
 
 # 3/6 industrial
 industrials = ['A5', 'I11', 'M9']
 names = ['Detroit', 'Pittsburgh', 'Wheeling']
-header = ['1', '4', '3']
+costs = [1, 4, 3]
 for i,key in enumerate(industrials):
 	lookup[key]['text'] = names[i]
-	lookup[key]['header'] = header[i]
-	lookup[key]['text_color'] = color_black
-	lookup[key]['type'] = 'industrial'
+	lookup[key]['fill'] = color_industrial
+	lookup[key]['header'] = '-%dx' % costs[i]
+	lookup[key]['footer'] = '+table'
+	lookup[key]['text_color'] = color_white
 
 # 4/6 mountains
 mountains = 'S7 T8 Q9 U9 N10 P10 R10 T10 M11 Q11 J12 L12 N12 K13 M13 J14'.split()
 costs = [3, 3, 4, 3, 3, 4, 4, 3, 4, 4, 3, 4, 2, 4, 2, 3]
 assert len(mountains) == len(costs)
 for i,key in enumerate(mountains):
-	lookup[key]['header'] = str(costs[i])
-	lookup[key]['type'] = 'mountain'
+	lookup[key]['header'] = '-%d' % costs[i]
+	lookup[key]['footer'] = '+1 +2'
+	lookup[key]['fill'] = color_mountain
 
 # 5/6 forest
 forests = 'Q7 P8 R8 K9 O9 F10 H10 J10 L10 E11 G11 K11 S11 F12 H12 P12 R12 C13 E13 G13 O13 Q13 S13 D14 F14 H14 L14 P14 C15 E15 G15 S15 D16 F16 H16 C17 E17 I17 D18 F18 H18'.split()
 costs = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 1, 3, 2, 4, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 assert(len(forests) == len(costs))
 for i,key in enumerate(forests):
-	lookup[key]['header'] = str(costs[i])
-	lookup[key]['type'] = 'forest'
+	lookup[key]['header'] = '-%d' % costs[i]
+	#lookup[key]['footer'] = '+$2'
+	lookup[key]['fill'] = color_forest
 
 # 6/6 plains (all plains have cost 1)
 for x in 'G1 I1 F2 H2 J2 N2 A3 C3 G3 I3 K3 M3 O3 B4 D4 F4 J4 L4 N4 C5 E5 G5 I5 K5 M5 O5 Q5 F6 H6 J6 N6 P6 E7 G7 I7 K7 M7 O7 F8 H8 J8 L8 N8 G9 D10 C11 D12 A13 B14 B16 B18 C19 E19 I19 K19 J18 K17 M17 Q17 J16 L16 N16 P16 R16 T16 K15 M15 O15 Q15 R14 T14 T12'.split():
-	lookup[x]['header'] = '1'
-	lookup[x]['type'] = 'plains'
+	lookup[x]['header'] = '-1x'
+	lookup[x]['fill'] = color_plains
 
 ###############################################################################
 # funcs
@@ -164,74 +170,31 @@ def drawRect(cr, x, y, width, height, color):
 	cr.rectangle(x, y, width, height)
 	cr.fill()	
 
-def drawTriangle(cr, pos, radius, stroke, fill):
-	(x,y) = pos
-
-	cr.set_source_rgb(*stroke)
-	cr.set_line_width(4)
-
-	ratio = math.sqrt(3)/2.0
-	p1 = (x, y-radius)
-	p2 = (x - ratio*radius, y + radius*(1/3.0))
-	p3 = (x + ratio*radius, y + radius*(1/3.0))
-
-	cr.move_to(*p1)
-	cr.line_to(*p2)
-	cr.line_to(*p3)
-	cr.line_to(*p1)
-	cr.line_to(*p2)
-	cr.stroke_preserve()
-
-	cr.set_source_rgb(*fill)
+def drawCrossHatch(cr, x, y, width, height, color):
+	cr.set_source_rgb(*color_white)
+	cr.rectangle(x, y, width, height)
 	cr.fill()
 
-def drawSquare(cr, pos, radius, stroke, fill):
-	(x,y) = pos
+	cr.save()
+	cr.rectangle(x, y, width, height)
+	cr.clip()
+	cr.new_path()
+	cr.set_source_rgb(*color)
+	cr.set_line_width(.5)
 
-	cr.set_source_rgb(*stroke)
-	cr.set_line_width(4)
+	start = int(x - height)
+	end = int(x + width + height)
 
-	cr.rectangle(x-radius, y-radius, radius*2, radius*2)
-	cr.stroke_preserve()
-
-	cr.set_source_rgb(*fill)
-	cr.fill()
-
-def drawHex(cr, pos, radius, stroke, fill):
-	(x,y) = pos
-
-	cr.set_source_rgb(*stroke)
-	cr.set_line_width(1)
-
-	ratio = math.sqrt(3)/2.0
-	cr.move_to(x + radius, y)
-	cr.line_to(x + radius/2.0, y - ratio*radius)
-	cr.line_to(x - radius/2.0, y - ratio*radius)
-	cr.line_to(x - radius, y)
-	cr.line_to(x - radius/2.0, y + ratio*radius)
-	cr.line_to(x + radius/2.0, y + ratio*radius)
-	cr.line_to(x + radius, y)
-	cr.stroke_preserve()
-
-	cr.set_source_rgb(*fill)
-	cr.fill()
-
-def drawCircle(cr, pos, radius, stroke, fill):
-	(x,y) = pos
-
-	cr.set_source_rgb(*stroke)
-	cr.set_line_width(4)
-
-	angleStart = 0
-	angleEnd = 2*math.pi
-	cr.move_to(x, y)
-	cr.arc(x, y, radius, angleStart, angleEnd)
-	cr.stroke_preserve()
-
-	cr.set_source_rgb(*fill)
-	cr.fill()
+	for k in xrange(start, end, 12):
+		cr.move_to(k, y)
+		cr.line_to(k + height, y+height)
+		cr.move_to(k, y+height)
+		cr.line_to(k+height, y)
+	cr.stroke()
+	cr.restore()
 
 def write(message, color, x, y, font='Georgia', size=15, backdrop=None):
+
 	cr.select_font_face(font)
 	cr.set_font_size(size)
 
@@ -254,7 +217,7 @@ def write(message, color, x, y, font='Georgia', size=15, backdrop=None):
 def hexRgb(r,g,b):
 	return (r/255.0, g/255.0, b/255.0)
 
-def drawGameHex(cr, key):
+def drawHex_KEY(cr, key):
 	[x,y] = key2coords(key)
 	print '%s -> (%d,%d)' % (key, x, y),
 	[x,y] = coords2pos(x,y)
@@ -286,21 +249,10 @@ def drawGameHex(cr, key):
 		write(lookup[key]['text'], text_color, x, y)
 
 	if lookup[key]['header']:
-		write(lookup[key]['header'], text_color, x-10, y-hex_rr + 8)
+		write(lookup[key]['header'], text_color, x, y-hex_rr + 8)
 
-	# draw the shape icon depending on type
-	if lookup[key]['type'] == 'forest':
-		drawTriangle(cr, (x+20,y-hex_rr+12), 4, (0,1,0), (0,1,0))
-	if lookup[key]['type'] == 'plains':
-		drawSquare(cr, (x+20,y-hex_rr+12), 4, (1,1,0), (1,1,0))
-	if lookup[key]['type'] == 'mountain':
-		drawHex(cr, (x+20,y-hex_rr+12), 6, (0,0,1), (0,0,1))
-	if lookup[key]['type'] == 'city':
-		drawCircle(cr, (x+20,y-hex_rr+12), 4, (1,0,0), (1,0,0))
-	if lookup[key]['type'] == 'industrial':
-		brown = (0x8b/255.0, 0x45/255.0, 0x13/255.0)
-		drawCircle(cr, (x+20,y-hex_rr+12), 4, brown, brown)
-		drawCircle(cr, (x+4,y-hex_rr+12), 4, brown, brown)
+	if lookup[key]['footer']:
+		write(lookup[key]['footer'], text_color, x, y+hex_rr - 11)
 
 ###############################################################################
 # main
@@ -310,12 +262,23 @@ surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width_px, height_px)
 cr = cairo.Context(surface)
 
 # default white background
-drawRect(cr, 0, 0, width_px, height_px, color_default)
+drawRect(cr, 0, 0, width_px, height_px, color_white)
+
+# default back
+posA = key2pos('A1')
+posB = key2pos('U19')
+if save_ink:
+	drawCrossHatch(cr, posA[0]-hex_r, posA[1]-hex_rr, posB[0]-posA[0]+hex_w, posB[1]-posA[1]+hex_h, color_black)
+else:
+	drawRect(cr, posA[0]-hex_r, posA[1]-hex_rr, posB[0]-posA[0]+hex_w, posB[1]-posA[1]+hex_h, color_black)
 
 # draw Michigan
 posA = key2pos('A1')
 posB = key2pos('E3')
-drawRect(cr, posA[0], posA[1]-hex_rr, posB[0]-posA[0], posB[1]-posA[1]+hex_rr, color_water)
+if save_ink:
+	drawCrossHatch(cr, posA[0]-hex_r, posA[1]-hex_rr, posB[0]-posA[0]+hex_r, posB[1]-posA[1]+hex_rr, color_water)
+else:
+	drawRect(cr, posA[0]-hex_r, posA[1]-hex_rr, posB[0]-posA[0]+hex_r, posB[1]-posA[1]+hex_rr, color_water)
 pos = key2pos('B1')
 write('Michigan', color_black, pos[0], pos[1], 'Georgia', 18, color_white)
 
@@ -324,9 +287,22 @@ posA = key2pos('A5')
 posB = key2pos('F13')
 width = posB[0]-posA[0]
 height = posB[1]-posA[1]
-drawRect(cr, posA[0], posA[1], width, height+hex_rr, color_water)
+if save_ink:
+	drawCrossHatch(cr, posA[0], posA[1]-hex_rr, width, height+hex_rr, color_water)
+else:
+	drawRect(cr, posA[0], posA[1]-hex_rr, width, height+hex_rr, color_water)
 pos = key2pos('B8')
 write('Erie', color_black, pos[0], pos[1], 'Georgia', 18, color_white)
+
+# draw Atlantic
+posA = key2pos('G15')
+posB = key2pos('U19')
+if save_ink:
+	drawCrossHatch(cr, posA[0], posA[1], posB[0]-posA[0]+hex_r, posB[1]-posA[1]+hex_rr, color_water)
+else:
+	drawRect(cr, posA[0], posA[1], posB[0]-posA[0]+hex_r, posB[1]-posA[1]+hex_rr, color_water)
+pos = key2pos('R19')
+write('Atlantic', color_black, pos[0], pos[1], 'Georgia', 18, color_white)
 
 for x in range(19):
 	for y in range(21):
@@ -335,7 +311,12 @@ for x in range(19):
 		key = coords2key(x,y)
 		if lookup[key]['visible'] == False:
 			continue
-		drawGameHex(cr, key)
+		drawHex_KEY(cr, key)
+
+cr.set_source_rgb(*color_black)
+cr.set_line_width(2)
+cr.rectangle(0,0,width_px,height_px)
+cr.stroke()
 
 if DEBUG:
 	write('final image size: %dx%d (ratio:%f)' % \

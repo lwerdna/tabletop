@@ -12,9 +12,11 @@ Size is 1584x1224 which should match 22"x17" at 72DPI which is 4 US letter paper
     |         |         |
     +---------+---------+
 
+Use your printing program or `slice.sh` to divide the image into page-sized chunks.
+
 ## Map1, the original, gen\_map1.py
 
-* TODO: show preview
+![](./other_rsrcs/preview2.png)
 
 ## Map2, the redraw, gen\_map2.py
 
