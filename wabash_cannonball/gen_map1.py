@@ -21,6 +21,8 @@ color_default = (0xee/255.0, 0xf7/255.0, 0xfa/255.0)
 color_black = (0, 0, 0)
 color_white = (1, 1, 1)
 color_red = (1, 0, 0)
+
+forest_green = (0x22, 0x8b, 0x22)
 color_green = (0, 0xcc/255.0, 0x66/255.0)
 color_blue = (0x33/255.0, 0x66/255.0, 0xff/255.0)
 color_yellow = (1, 1, 0)
@@ -33,6 +35,8 @@ color_water = (0x0, 0xBf/255.0, 0xff)
 color_plains = (0xfe/255.0, 0xfe/255.0, 0xe8/255.0)
 color_forest = (0xd5/255.0, 0xf5/255.0, 0xd5/255.0)
 color_mountain = (0x8c/255.0, 0x84/255.0, 0x7f/255.0)
+
+brown = (0x8b/255.0, 0x45/255.0, 0x13/255.0)
 
 ###############################################################################
 # measuring, coordinates
@@ -164,7 +168,7 @@ def drawRect(cr, x, y, width, height, color):
 	cr.rectangle(x, y, width, height)
 	cr.fill()	
 
-def drawTriangle(cr, pos, radius, stroke, fill):
+def drawTriangle(cr, pos, radius, stroke, fill=None):
 	(x,y) = pos
 
 	cr.set_source_rgb(*stroke)
@@ -290,7 +294,7 @@ def drawGameHex(cr, key):
 
 	# draw the shape icon depending on type
 	if lookup[key]['type'] == 'forest':
-		drawTriangle(cr, (x+20,y-hex_rr+12), 4, (0,1,0), (0,1,0))
+		drawTriangle(cr, (x+20,y-hex_rr+12), 4, forest_green, forest_green)
 	if lookup[key]['type'] == 'plains':
 		drawSquare(cr, (x+20,y-hex_rr+12), 4, (1,1,0), (1,1,0))
 	if lookup[key]['type'] == 'mountain':
@@ -298,7 +302,6 @@ def drawGameHex(cr, key):
 	if lookup[key]['type'] == 'city':
 		drawCircle(cr, (x+20,y-hex_rr+12), 4, (1,0,0), (1,0,0))
 	if lookup[key]['type'] == 'industrial':
-		brown = (0x8b/255.0, 0x45/255.0, 0x13/255.0)
 		drawCircle(cr, (x+20,y-hex_rr+12), 4, brown, brown)
 		drawCircle(cr, (x+4,y-hex_rr+12), 4, brown, brown)
 
