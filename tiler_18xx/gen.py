@@ -12,6 +12,8 @@ margin_x = 4
 margin_y = 4
 
 hex_r = 95.0
+track_width = 10
+track_width_bg = 15
 hex_outline_width = 5
 
 total_rows = 3
@@ -107,24 +109,50 @@ def hexRgb(r,g,b):
 def drawHex(x, y):
 	print '-> (%d,%d)' % (x, y)
 
-	ratio = math.sqrt(3)/2.0
+	points = [[x, y - hex_r], [x - hex_rr, y-hex_r/2], [x - hex_rr, y+hex_r/2], \
+		[x, y + hex_r], [x + hex_rr, y+hex_r/2], [x + hex_rr, y-hex_r/2], \
+		[x, y - hex_r]]
 
-	cr.set_line_width(hex_outline_width)
-	cr.set_source_rgb(0,0,0)
-
-	cr.move_to(x, y - hex_r)
-	cr.line_to(x - hex_rr, y-hex_r/2)
-	cr.line_to(x - hex_rr, y+hex_r/2)
-	cr.line_to(x, y + hex_r)
-	cr.line_to(x + hex_rr, y+hex_r/2)
-	cr.line_to(x + hex_rr, y-hex_r/2)
-	cr.line_to(x, y - hex_r)
-
-	cr.stroke_preserve()
-
+	# 1) fill
 	colors = [color_green, color_brown, color_yellow]
 	cr.set_source_rgb(*colors[random.randint(0,len(colors)-1)])
+	cr.move_to(*points[0])
+	for i in range(6):
+		cr.line_to(*points[i+1])
 	cr.fill()
+
+	# 2) track
+	cr.set_line_cap(cairo.LINE_CAP_BUTT)
+	cr.set_line_width(track_width_bg)
+	cr.set_source_rgb(1,1,1)
+	cr.arc(x+hex_rr, y-hex_r/2, hex_r/2, math.pi/2.0,  (210/360.0)* 2*math.pi)
+	cr.stroke()
+
+	cr.set_line_cap(cairo.LINE_CAP_BUTT)
+	cr.set_line_width(track_width_bg)
+	cr.set_source_rgb(1,1,1)
+	cr.arc(x+2*hex_rr, y, 1.5*hex_r, (150/360.0)*2*math.pi, (210/360.0)*2*math.pi)
+	cr.stroke()
+
+	cr.set_line_width(track_width)
+	cr.set_source_rgb(0,0,0)
+	cr.arc(x+hex_rr, y-hex_r/2, hex_r/2, math.pi/2.0,  (210/360.0)* 2*math.pi)
+	cr.stroke()
+
+
+	cr.set_source_rgb(0,0,0)
+	cr.arc(x+2*hex_rr, y, 1.5*hex_r, (150/360.0)*2*math.pi, (210/360.0)*2*math.pi)
+	cr.stroke()
+
+	# 3) border
+	cr.set_line_cap(cairo.LINE_CAP_ROUND)
+	cr.set_line_width(hex_outline_width)	
+	cr.set_source_rgb(0,0,0)
+	for i in range(6):
+		cr.move_to(*points[i])
+		cr.line_to(*points[i+1])
+		cr.stroke()
+
 
 #	text_color = lookup[key]['text_color']
 #
