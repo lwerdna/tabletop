@@ -71,9 +71,14 @@ def imagemagick(args):
 	print 'calling:', ' '.join(args)
 	subprocess.call(args)
 
-def usletter_rulersheet(w, h):
+def usletter_rulersheet():
+	(w,h) = (paper_w, paper_h)
+
+	# bleeds on my HP Officejet Pro X576dw MFP
+	(bleed_n, bleed_s, bleed_e, bleed_w) = (.17, .17, .17, .17)
+
 	csname = 'ruler.png'
-	px_per_in = w/11.0
+	px_per_in = w/(11.0 - bleed_e - bleed_w)
 
 	args = ['convert', '-size', '%dx%d' % (paper_w, paper_h), 'xc:white', csname]
 	imagemagick(args)
@@ -120,6 +125,7 @@ def blank_sheet():
 
 if __name__ == '__main__':
 	blank_sheet()
+	usletter_rulersheet()
 
 	# generate the real card sheets
 	while files:
