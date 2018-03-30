@@ -35,7 +35,7 @@ startpos_x = startpos_x_in * px_per_in
 startpos_y = startpos_y_in * px_per_in
 print "drawing cards starting at %d,%d" % (startpos_x, startpos_y)
 
-files = [ 
+files = [
 	'Ui5ZN3Y.png', 'Jd9pKa8.png', 'UcpkBaX.png', 'mYSnRmN.png', 'v5SLf5U.png',
 	'VtC83bu.png', '9dEOdMQ.png', 'gIZFV49.png', 'Vfk4duq.png', 'exf7fSs.png',
 	'oLlBUWl.png', 'e4K8xnJ.png', '7fzBsFG.png', 'j1ZzBsL.png', '2oCZeOT.png',
@@ -49,7 +49,7 @@ files = [
 	'5BPZie6.png', 'HwLr1Lr.png', 'txnWRpW.png', 'bXlVP9Z.png', 'L92KFNh.png',
 	'ntEEl1J.png', 'hPgygzB.png', 'amGKBFJ.png', 'Ci5BS4t.png', 'mudObqd.png',
 	'YzHuR0d.png', 'KuwusZV.png', '71m1w3i.png', '9RwVakv.png', 'lzumrHX.png',
-	'lS8kMod.png', 'F9WFzNv.png', 'TOr4YQV.png', '1IBnyun.png', 'jknaDzA.png' 
+	'lS8kMod.png', 'F9WFzNv.png', 'TOr4YQV.png', '1IBnyun.png', 'jknaDzA.png'
 ]
 
 sheet = 0
@@ -71,42 +71,78 @@ def imagemagick(args):
 	print 'calling:', ' '.join(args)
 	subprocess.call(args)
 
-# generate test sheet
-csname = 'card_sheet_blank.png'
-args = ['convert', '-size', '%dx%d' % (paper_w, paper_h), 'xc:white', csname]
-imagemagick(args)
-for (x,y) in positions:
-	# draw crop lines
+def usletter_rulersheet(w, h):
+	csname = 'ruler.png'
+	px_per_in = w/11.0
+
+	args = ['convert', '-size', '%dx%d' % (paper_w, paper_h), 'xc:white', csname]
+	imagemagick(args)
+
 	args = ['convert']
-	args += ['-draw', 'line %d,%d %d,%d' % (0,y, paper_w,y)]
-	args += ['-draw', 'line %d,%d %d,%d' % (x,0, x,paper_h)]
-	args += ['-draw', 'line %d,%d %d,%d' % (0,y+card_h+2,paper_w,y+card_h+2)]
-	args += ['-draw', 'line %d,%d %d,%d' % (x+card_w+2,0,x+card_w+2,paper_h)]
+	# draw vertical lines to the right of center
+	(x,y) = (w/2.0, h/2.0)
+	while x < w:
+		args += ['-draw', 'line %d,%d %d,%d' % (x,0, x,h)]
+		x += px_per_in
+	# draw vertical lines to the left of center
+	(x,y) = (w/2.0, h/2.0)
+	while x >= 0:
+		args += ['-draw', 'line %d,%d %d,%d' % (x,0, x,h)]
+		x -= px_per_in
+	# draw horizontal lines above center
+	(x,y) = (w/2.0, h/2.0)
+	while y >= 0:
+		args += ['-draw', 'line %d,%d %d,%d' % (0,y, w,y)]
+		y -= px_per_in
+	# draw horizontal lines below center
+	(x,y) = (w/2.0, h/2.0)
+	while y < h:
+		args += ['-draw', 'line %d,%d %d,%d' % (0,y, w,y)]
+		y += px_per_in
+	#
 	args += [csname, csname]
 	imagemagick(args)
-	
-# generate the real card sheets
-while files:
-	group = files[0:6]
 
-	csname = 'card_sheet_%d.png' % sheet
-
-	# generate blank sheet
-	shutil.copy('card_sheet_blank.png', csname)
-
-	# for each card
-	for (i,fname) in enumerate(group):
-		(x,y) = positions[i]
-
-		# crop to card.png
-		args = ['convert', '-crop', '%dx%d+%d+%d' % (card_w, card_h, card_offs_x, card_offs_y), './cards/%s' % fname, 'card.png']
-		imagemagick(args)
-		# insert it
-		args = ['composite', '-gravity', 'NorthWest', '-geometry', '+%d+%d' % (x+1, y+1), 'card.png', csname, csname]
+def blank_sheet():
+	# generate test sheet
+	csname = 'card_sheet_blank.png'
+	args = ['convert', '-size', '%dx%d' % (paper_w, paper_h), 'xc:white', csname]
+	imagemagick(args)
+	for (x,y) in positions:
+		# draw crop lines
+		args = ['convert']
+		args += ['-draw', 'line %d,%d %d,%d' % (0,y, paper_w,y)]
+		args += ['-draw', 'line %d,%d %d,%d' % (x,0, x,paper_h)]
+		args += ['-draw', 'line %d,%d %d,%d' % (0,y+card_h+2,paper_w,y+card_h+2)]
+		args += ['-draw', 'line %d,%d %d,%d' % (x+card_w+2,0,x+card_w+2,paper_h)]
+		args += [csname, csname]
 		imagemagick(args)
 
-	print ''
+if __name__ == '__main__':
+	blank_sheet()
 
-	files = files[6:]
-	sheet += 1
-	
+	# generate the real card sheets
+	while files:
+		group = files[0:6]
+
+		csname = 'card_sheet_%d.png' % sheet
+
+		# generate blank sheet
+		shutil.copy('card_sheet_blank.png', csname)
+
+		# for each card
+		for (i,fname) in enumerate(group):
+			(x,y) = positions[i]
+
+			# crop to card.png
+			args = ['convert', '-crop', '%dx%d+%d+%d' % (card_w, card_h, card_offs_x, card_offs_y), './cards/%s' % fname, 'card.png']
+			imagemagick(args)
+			# insert it
+			args = ['composite', '-gravity', 'NorthWest', '-geometry', '+%d+%d' % (x+1, y+1), 'card.png', csname, csname]
+			imagemagick(args)
+
+		print ''
+
+		files = files[6:]
+		sheet += 1
+
