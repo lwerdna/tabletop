@@ -15,7 +15,23 @@ cgitb.enable()
 print 'Content-Type: text/html'
 print
 
-
+cardsToImg = {
+	'Meat Packing Company':'./images/private_meat.png',
+	'Steamboat Company':'./images/private_boat.png',
+	'Tunnel Blasting Company':'./images/private_tunnel.png',
+	'Michigan Central':'./images/private_mc.png',
+	'Ohio & Indiana':'./images/private_oi.png',
+	'Lake Shore Line':'./images/private_lsl.png',
+	'Chicago and Western Indiana':'./images/private_cwi.png',
+	'Big 4':'./images/private_big4.png',
+	'Michigan Southern':'./images/private_ms.png',
+	'Mail Contract':'./images/private_mc.png',
+	'Pass#1':'./images/private_pass1.png',
+	'Pass#2':'./images/private_pass2.png',
+	'Pass#3':'./images/private_pass3.png',
+	'Pass#4':'./images/private_pass4.png',
+	'Pass#5':'./images/private_pass5.png'
+}
 
 # privates elligable for removal:
 cardsBlueRect = ['Meat Packing Company', 'Steamboat Company', 'Tunnel Blasting Company']
@@ -161,7 +177,10 @@ if state.isDone():
 	print 'draft is finished!<br>'
 	for player in state.players:
 		cards = filter(lambda x: not x.startswith('Pass'), state.owned[player])
-		print '<b>%s</b> drafted %s<br>' % (player, ', '.join(cards))
+		print '<b>%s</b>:<br>' % player
+		for card in cards:
+			print '<img border=1 src="%s">' % cardsToImg[card]
+		print '<hr>'
 	op = 'skip'
 
 try:
@@ -185,12 +204,15 @@ try:
 		player = form['player'].value
 		if player == state.players[state.turn]:
 			print 'it\'s your turn! choices:<br>'
-			print '<form action=index.py>'
+			print '<form id="myform" action=index.py>'
 			print '<input type=hidden name=player value=%s>' % player
 			print '<input type=hidden name=op value=choose>'
+			print '<input type=hidden id=card name=card>'
 			for card in state.hand:
-				print '<input type=radio name=card value="%s">%s</input>' % (card,card)
-			print '<input type=submit value=choose>'
+				print '<img border=1 src="%s"' % cardsToImg[card],
+				print 'onclick="document.getElementById(\'card\').value=\'%s\';' % card,
+				print 'document.getElementById(\'myform\').submit();"',
+				print '>'
 			print '</form>'
 		else:
 			print 'not your turn!<br>'
