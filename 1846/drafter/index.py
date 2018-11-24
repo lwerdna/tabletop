@@ -4,10 +4,9 @@
 
 import os
 import sys
-
 import pickle
-
 import random
+import datetime
 
 import cgi
 import cgitb
@@ -15,6 +14,8 @@ cgitb.enable()
 
 print 'Content-Type: text/html'
 print
+
+
 
 # privates elligable for removal:
 cardsBlueRect = ['Meat Packing Company', 'Steamboat Company', 'Tunnel Blasting Company']
@@ -28,10 +29,23 @@ cardsGreenDiamond = ['Chesapeake and Ohio Railroad', 'Erie Railroad', 'Pennsylva
 assert(len(cardsBlueRect) + len(cardsOrangeDot) + len(cardsOthers) + len(cardsPass) == 15)
 
 class State:
-	def __init__(self, players):
-		self.log = []
+	def __init__(self, players, seed=None):
+		# state of the draft:
+		self.players = None			# (list) names of the players
+		self.turn = None			# (int)  index of player whose turn it is
+		self.deck = None			# (list) cards remaining in the draft
+		self.hand = None			# (list) the cards that the current player can "see"
+		self.owned = None			# (dict) player name -> list of cards owned 
+		self.log = None				# (list) log entries
+		self.rstate = None			# (obj)  random number generator state
 
+		self.log = []
 		self.log.append('initializing setup')
+
+		if not seed:
+			seed = random.randint(1,1000000)
+		self.log.append('using seed: %d' % seed)
+		random.seed(seed)
 
 		# randomly order the players
 		self.players = players
@@ -66,6 +80,8 @@ class State:
 		random.shuffle(self.deck)
 		self.log.append('remaining cards: ' + ', '.join(self.deck))
 
+		self.rstate = random.getstate()
+
 		# what each player owns
 		self.owned = {}
 		for p in players:
@@ -94,22 +110,35 @@ class State:
 
 		# remove from deck
 		self.deck = filter(lambda x: x != card, self.deck)
+		#print 'deck now contains: ' + ','.join(self.deck)
 
 		# add to player's hand
 		self.owned[player].append(card)
+		self.log.append(str(datetime.datetime.now()) + ' %s has chosen' % player)
 	
-		self.log.append('%s has made their choice' % player)
-
+		# advance to next player
+		self.deal()
 		self.nextPlayer()
 
 	def deal(self):
-		handAmt = len(players)+2
+		random.setstate(self.rstate)
+
+		handAmt = len(self.players)+2
 
 		if len(self.deck) <= handAmt:
 			self.hand = list(self.deck)	
 		else:
 			random.shuffle(self.deck)
 			self.hand = self.deck[0:handAmt]
+
+		self.rstate = random.getstate()
+
+	def isDone(self):
+		for card in self.deck:
+			if not card.startswith('Pass'):
+				return False
+		return True
+			
 
 state = None
 if os.path.exists('state.dat'):
@@ -120,6 +149,7 @@ else:
 
 form = cgi.FieldStorage()
 
+# expected variables from CGI
 op = None
 if 'op' in form:
 	op = form['op'].value
@@ -127,30 +157,50 @@ player = None
 if 'player' in form:
 	player = form['player'].value
 
-if op:
-	if op == 'init':
-		players = form['players'].value.split(',')
-		print 're-initializing draft with players: %s<br>\n' % players
-		state = State(players)
-	elif op == 'choose':
-		state.choose(player, form['card'].value)
+if state.isDone():
+	print 'draft is finished!<br>'
+	for player in state.players:
+		cards = filter(lambda x: not x.startswith('Pass'), state.owned[player])
+		print '<b>%s</b> drafted %s<br>' % (player, ', '.join(cards))
+	op = 'skip'
 
-elif ('player' in form):
-	player = form['player'].value
-	if player == state.players[state.turn]:
-		print 'it\'s your turn! choices:<br>\n'
-		print '<form action=index.py>\n'
-		print '<input type=hidden name=player value=%s>\n' % player
-		print '<input type=hidden name=op value=choose>\n'
-		for card in state.hand:
-			print '<input type=radio name=card value="%s">%s</input>\n' % (card,card)
-		print '<input type=submit value=choose>\n'
-		print '</form>\n'
-	else:
-		print 'not your turn!<br>\n'
+try:
+#if True:
+	if op == 'skip':
+		pass
+	elif op:
+		if op == 'init':
+			players = form['players'].value.split(',')
+			seed = None
+			if 'seed' in form:
+				seed = int(form['seed'].value)
+			print 're-initializing draft with players: %s<br>' % players
+			state = State(players, seed)
+		elif op == 'choose':
+			card = form['card'].value
+			state.choose(player, card)
+			print 'you chose: %s' % card
+	
+	elif ('player' in form):
+		player = form['player'].value
+		if player == state.players[state.turn]:
+			print 'it\'s your turn! choices:<br>'
+			print '<form action=index.py>'
+			print '<input type=hidden name=player value=%s>' % player
+			print '<input type=hidden name=op value=choose>'
+			for card in state.hand:
+				print '<input type=radio name=card value="%s">%s</input>' % (card,card)
+			print '<input type=submit value=choose>'
+			print '</form>'
+		else:
+			print 'not your turn!<br>'
+except Exception as e:
+	print '<font color=red><b>ERROR:</b></font> %s' % str(e)
 
-print '<b>draft log:</b><br><hr>\n'
-print '<br>\n'.join(state.log)
+print '<br><br>'
+print 'draft log:'
+print '<hr>'
+print '<br>\n'.join(state.log), '<br>'
 
 with open('state.dat', 'w') as fp:
 	pickle.dump(state, fp);
