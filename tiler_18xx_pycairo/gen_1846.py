@@ -17,7 +17,7 @@ dpi = 300
 #     \  /
 #      \/
 
-hex_r = 1.25 * dpi
+hex_r = 7/8.0 * dpi
 track_width = .15 * dpi
 track_width_bg = .2 * dpi
 town_radius = .150 * dpi
@@ -30,7 +30,7 @@ font_size = 64
 total_rows = 3
 hex_per_row = 3
 
-save_ink = True
+save_ink = False
 
 default = (1, 1, 1)
 #default = (0, 0, 0)
@@ -292,17 +292,27 @@ def drawHex(pos, info):
 		if track in ['C-E', 'C-SE', 'C-SW', 'C-W', 'C-NW', 'C-NE']:
 			(p1,p2) = map(lambda k: lookup[k], track.split('-'))
 			layer1.append(('line', p1, p2))
+
+		# straight lines
 		elif track in ['NE-SW', 'SW-NE', 'NW-SE', 'SE-NW', 'E-W', 'W-E']:
 			(p1,p2) = map(lambda k: lookup[k], track.split('-'))
 			layer2.append(('line', p1, p2))
-		elif track in ['NE-E', 'E-NE']:
-			layer2.append(('arc', (x+hex_rr, y-hex_r/2), hex_r/2, d2r(180), d2r(210)))
+
+		# gentle curves
 		elif track in ['NW-SW', 'SW-NW']:
 			layer2.append(('arc', (x-2*hex_rr, y), hex_r*1.5, d2r(330), d2r(30)))
-		elif track in ['NW-NE', 'NE-NW']:
-			layer2.append(('arc', (x, y-hex_r), hex_r/2.0, d2r(30), d2r(150)))
 		elif track in ['NW-E', 'E-NW']:
 			layer2.append(('arc', (x+hex_rr, y-1.5*hex_r), 1.5*hex_r, d2r(90), d2r(150)))
+		elif track in ['SW-E', 'E-SW']:
+			layer2.append(('arc', (x+hex_rr, y+1.5*hex_r), 1.5*hex_r, d2r(210), d2r(270)))
+
+		# sharp curves
+		elif track in ['NW-NE', 'NE-NW']:
+			layer2.append(('arc', (x, y-hex_r), hex_r/2.0, d2r(30), d2r(150)))
+		elif track in ['NE-E', 'E-NE']:
+			layer2.append(('arc', (x+hex_rr, y-hex_r/2), hex_r/2, d2r(180), d2r(210)))
+		elif track in ['SW-SE', 'SE-SW']:
+			layer2.append(('arc', (x, y+hex_r), hex_r/2, d2r(210), d2r(330)))
 		else:
 			raise Exception("unknown track: %s" % track)
 
@@ -463,31 +473,46 @@ print surface.get_fallback_resolution()
 x = width_px/2.0
 y = height_px/2.0
 positions = []
+allshift_y = .5*hex_r
+# col0
+positions.append([x-2*hex_w, 		y-2*hex_h-hex_r+allshift_y])
+positions.append([x-2*hex_w, 		y-1*hex_h-hex_r+allshift_y])
+positions.append([x-2*hex_w, 		y+0*hex_h-hex_r+allshift_y])
+positions.append([x-2*hex_w, 		y+1*hex_h-hex_r+allshift_y])
+positions.append([x-2*hex_w, 		y+2*hex_h-hex_r+allshift_y])
 # left column
-positions.append([x-hex_w,	y-hex_h-hex_r])
-positions.append([x-hex_w,	y-hex_r])
-positions.append([x-hex_w,	y+hex_h-hex_r])
-positions.append([x-hex_w,	y+2*hex_h-hex_r])
+positions.append([x-1*hex_w,	y-2*hex_h+allshift_y])
+positions.append([x-1*hex_w,	y-1*hex_h+allshift_y])
+positions.append([x-1*hex_w,	y-0*hex_h+allshift_y])
+positions.append([x-1*hex_w,	y+1*hex_h+allshift_y])
+positions.append([x-1*hex_w,	y+2*hex_h+allshift_y])
 # middle column
-positions.append([x, 		y-hex_h])
-positions.append([x, 		y])
-positions.append([x, 		y+hex_h])
+positions.append([x, 		y-2*hex_h-hex_r+allshift_y])
+positions.append([x, 		y-1*hex_h-hex_r+allshift_y])
+positions.append([x, 		y+0*hex_h-hex_r+allshift_y])
+positions.append([x, 		y+1*hex_h-hex_r+allshift_y])
+positions.append([x, 		y+2*hex_h-hex_r+allshift_y])
 # right column
-positions.append([x+hex_w,	y-hex_h-hex_r])
-positions.append([x+hex_w,	y-hex_r])
-positions.append([x+hex_w,	y+hex_h-hex_r])
-positions.append([x+hex_w,	y+2*hex_h-hex_r])
+positions.append([x+1*hex_w,	y-2*hex_h+allshift_y])
+positions.append([x+1*hex_w,	y-1*hex_h+allshift_y])
+positions.append([x+1*hex_w,	y-0*hex_h+allshift_y])
+positions.append([x+1*hex_w,	y+1*hex_h+allshift_y])
+positions.append([x+1*hex_w,	y+2*hex_h+allshift_y])
+# col4
+positions.append([x+2*hex_w, 		y-2*hex_h-hex_r+allshift_y])
+positions.append([x+2*hex_w, 		y-1*hex_h-hex_r+allshift_y])
+positions.append([x+2*hex_w, 		y+0*hex_h-hex_r+allshift_y])
+positions.append([x+2*hex_w, 		y+1*hex_h-hex_r+allshift_y])
+positions.append([x+2*hex_w, 		y+2*hex_h-hex_r+allshift_y])
 
 # manifest
-tile03 = {'id':3, 'color':yellow, 'tracks':['C-NE', 'C-NW'], 'town':1, 'cost':10}
-tile04 = {'id':4, 'color':yellow, 'tracks':['C-NW', 'C-SE'], 'town':1, 'cost':10}
-tile05 = {'id':5, 'color':yellow, 'tracks':['C-NE', 'C-NW'], 'city1':1, 'cost':20}
-tile06 = {'id':6, 'color':yellow, 'tracks':['C-NW', 'C-E'], 'city1':1, 'cost':20}
-tile07 = {'id':7, 'color':yellow, 'tracks':['NE-NW']}
-tile08 = {'id':8, 'color':yellow, 'tracks':['NW-E']}
-tile09 = {'id':9, 'color':yellow, 'tracks':['NW-SE']}
+tile05 = {'id':5, 'color':yellow, 'tracks':['C-SW', 'C-SE'], 'city1':1, 'cost':20}
+tile06 = {'id':6, 'color':yellow, 'tracks':['C-SW', 'C-E'], 'city1':1, 'cost':20}
+tile07 = {'id':7, 'color':yellow, 'tracks':['SW-SE']}
+tile08 = {'id':8, 'color':yellow, 'tracks':['SW-E']}
+tile09 = {'id':9, 'color':yellow, 'tracks':['SW-NE']}
 
-tile14 = {'id':14, 'color':green, 'tracks':['NW-SE', 'C-E', 'C-W'], 'city2-120':1, 'cost':30}
+tile14 = {'id':14, 'color':green, 'tracks':['NE-SW', 'N-S'], 'city2-120':1, 'cost':30}
 tile15 = {'id':15, 'color':green, 'tracks':['NW-SE', 'C-NE', 'C-E'], 'city2-150':1, 'cost':30}
 tile19 = {'id':19, 'color':green, 'tracks':['NW-E', 'NE-SW']}
 tile20 = {'id':20, 'color':green, 'tracks':['NW-SE', 'E-W']}
@@ -524,15 +549,12 @@ tile717 = {'id':717, 'color':brown, 'tracks':['NE-SW','NW-SE','E-W'], 'city4':1,
 
 tile718 = {'id':718, 'color':grey, 'tracks':['NE-SW','NW-SE','E-W'], 'city4':1, 'cost':60}
 
-yellows =	[tile03]*2 + \
-			[tile04]*2 + \
-			[tile05]*3 + \
-			[tile06]*7 + \
-			[tile07]*3 + \
-			[tile08]*10 + \
-			[tile09]*14 + \
-			[tile57]*3 + \
-			[tile58]*2
+yellows =	[tile05]*3 + \
+			[tile06]*4 + \
+			[tile07]*5 + \
+			[tile08]*16 + \
+			[tile09]*16 + \
+			[tile57]*4
 
 greens =	[tile14]*3 + \
 			[tile15]*2 + \
@@ -578,16 +600,17 @@ if sys.argv[1:] and sys.argv[1] == 'test':
 	surface.write_to_png(path)
 
 else:
+	batchsz = len(positions)
 	pageNum = 0
 	
 	for colorBatch in [yellows, greens, browns, greys]:
-		nBatches = (len(colorBatch)+10)/11
+		nBatches = (len(colorBatch)+batchsz-1)/batchsz
 		for nBatch in range(nBatches):
 			drawRect(cr, 0, 0, width_px, height_px, white)
 			drawCutGuides(positions)
 	
 			# go 11 at a time
-			tileBatch = colorBatch[nBatch*11:(nBatch+1)*11]
+			tileBatch = colorBatch[nBatch*batchsz:(nBatch+1)*batchsz]
 			for (i,tile) in enumerate(tileBatch):
 				drawHex(positions[i], tile)
 	
@@ -598,5 +621,7 @@ else:
 	
 			# next
 			pageNum += 1
+
+			sys.exit(-1)
 
 
