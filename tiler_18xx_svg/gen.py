@@ -24,17 +24,35 @@ def shift(fpath, x, y):
 			while cmds:
 				if cmds.startswith(' '):
 					cmds = cmds[1:]
+				# [M]ove absolute: we shift
 				elif cmds[0:2] in ('M ', 'L '):
-					m = re.match(r'(.) (\d+),(\d+)', cmds)
+					m = re.match(r'(.) ([\d\.]+),([\d\.]+)', cmds)
 					assert(m)
-					tmp.append('%s %d %d' % (m.group(1), int(m.group(2))+x, int(m.group(3))+y))
+					tmp.append('%s %f %f' % (m.group(1), float(m.group(2))+x, float(m.group(3))+y))
 					cmds = cmds[len(m.group(0)):]
+				# [m]ove relative: we NOP
+				elif cmds[0:2] in ('m '):
+					m = re.match(r'(.) ([\d\.]+),([\d\.]+)', cmds)
+					assert(m)
+					tmp.append(cmds[0:len(m.group(0))])
+					cmds = cmds[len(m.group(0)):]	
+				# [A]rc absolute: we shift
 				elif cmds[0:2] in ('A '):
-					m = re.match(r'(. \d+,\d+ \d+ \d+,\d+ )(\d+),(\d+)', cmds)
-					assert(m)
-					tmp.append('%s %d,%d' % (m.group(1), int(m.group(2))+x, int(m.group(3))+y))
-					cmds = cmds[len(m.group(0)):]
-				elif cmds[0] == 'Z':
+					strlen = re.match(r'A [\d\., ]+', cmds).end()
+					substr = cmds[0:strlen]
+					numbers = map(float, re.findall(r'[\d\.]+', substr))
+					numbers[5] += x
+					numbers[6] += y
+					assert len(numbers) == 7
+					tmp.append('A %f,%f %f %d,%d %f,%f' % tuple(numbers))
+					cmds = cmds[strlen:]
+				# [A]rc relative, we NOP
+				elif cmds[0:2] in ('a '):
+					strlen = len(re.match(r'a [-\d\., ]+', cmds).group(0))
+					tmp.append(cmds[0:strlen])
+					cmds = cmds[strlen:]	
+				# Z is close path
+				elif cmds[0] in ('Z','z'):
 					tmp.append('Z')
 					cmds = cmds[1:]
 				else:
@@ -44,8 +62,16 @@ def shift(fpath, x, y):
 			child.set('cx', str(int(child.get('cx'))+x))
 			child.set('cy', str(int(child.get('cy'))+y))
 		elif tag in ['text']:
-			child.set('x', str(int(child.get('x'))+x))
-			child.set('y', str(int(child.get('y'))+y))			
+			child.set('x', str(float(child.get('x'))+x))
+			child.set('y', str(float(child.get('y'))+y))
+		elif tag in ['polygon']:
+			tmp = []
+			for pts in child.get('points').split(' '):
+				(x_,y_) = map(int, re.match(r'(\d+),(\d+)', pts).group(1,2))
+				tmp.append('%d,%d' % (x_+x, y_+y))
+			child.set('points', ' '.join(tmp))
+		elif tag in ['metadata', 'defs', 'namedview']:
+			pass
 		else:
 			raise Exception("oh no, dunno what to do with: " + child.tag)
 
@@ -67,7 +93,6 @@ def make_page(width, height, positions, tiles, fname):
 
 	for (i,position) in enumerate(positions):
 		fpath = os.path.join('.', 'tiles', tiles[i])
-		print 'fpath: %s' % fpath
 		result += '\n<!-- inserting file %s -->\n' % fpath
 		result += shift(fpath, position[0], position[1])
 
@@ -78,38 +103,64 @@ def make_page(width, height, positions, tiles, fname):
 		fp.write(result)
 
 if __name__ == '__main__':
+	# layouts
+	(hex_width, hex_height, page_width, page_height, margin_n, margin_e, \
+		tiles_per_page, positions, description) = (0,0,0,0,0,0,0,[],'')
+
+	# parse args
+	if len(sys.argv) != 3:
+		print 'usage:'
+		print '    %s <manifest> <layout>\n' % sys.argv[0]
+		print ''
+		print 'example:'
+		print '    %s 1846.manifest 0\n' % sys.argv[0]
+		print ''
+		print 'layouts: '
+		print '    layout0: 1.5in flat-to-flat hexes on 8.5x11'
+		sys.exit(-1)
+		
+	manifest = sys.argv[1]
+	layoutName = sys.argv[2]
+
+	if not os.path.exists(manifest):
+		raise Exception('manifest file \'%s\' not found' % manifest)
+
+	if layoutName == 'layout0':
+		description = '1.5in flat-to-flat hexes on 8.5x11'
+		hex_width = 392
+		hex_height = 340
+		page_width = 2486
+		page_height = 1920
+		margin_n = 110
+		margin_e = 67
+		tiles_per_page = 28
+		positions = []
+		for i in range(6):
+			positions.append([margin_e + i*hex_width, margin_n + 0])
+		for i in range(5):
+			positions.append([margin_e + hex_width/2 + i*hex_width, margin_n + hex_height])
+		for i in range(6):
+			positions.append([margin_e + i*hex_width, margin_n + 2*hex_height])
+		for i in range(5):
+			positions.append([margin_e + hex_width/2 + i*hex_width, margin_n + 3*hex_height])
+		for i in range(6):
+			positions.append([margin_e + i*hex_width, margin_n + 4*hex_height])
+	else:
+		raise Exception('layout \'%s\' not found' % layout)
+
+	# go!
 	ET.register_namespace('', 'http://www.w3.org/2000/svg')
 
-	(hex_count_x, hex_count_y) = (7,5)
-	(hex_width, hex_height) = (392, 340)
-	(page_width, page_height) = (2486, 1920)
-
-	#print shift('./tiles/tile-5.svg', 0, 0)
-	#sys.exit(0)
-
-	margin_n = 110
-	margin_e = 67
-	positions = []
-	for i in range(6):
-		positions.append([margin_e + i*hex_width, margin_n + 0])
-	for i in range(5):
-		positions.append([margin_e + hex_width/2 + i*hex_width, margin_n + hex_height])
-	for i in range(6):
-		positions.append([margin_e + i*hex_width, margin_n + 2*hex_height])
-	for i in range(5):
-		positions.append([margin_e + hex_width/2 + i*hex_width, margin_n + 3*hex_height])
-	for i in range(6):
-		positions.append([margin_e + i*hex_width, margin_n + 4*hex_height])
-
 	pageNum = 0
-	# blank test page
 	make_page(page_width, page_height, positions, [], 'sheet_%02d.svg' % pageNum)
 	pageNum += 1
-	# yellow pages
-	yellows = ['tile5.svg']*3 + ['tile6.svg']*4 + ['tile7.svg']*5 + ['tile8.svg']*16 + ['tile9.svg']*16 + ['tile57.svg']*4 + ['tile291.svg'] + ['tile292.svg'] + ['tile293.svg']
 
-	while yellows:
-		make_page(page_width, page_height, positions, yellows[0:28], 'sheet_%02d.svg' % pageNum)
-		yellows = yellows[28:]
+	tiles = []
+	with open(manifest, 'r') as fp:
+		tiles = map(lambda x: x.strip(), fp.readlines())
+
+	while tiles:
+		make_page(page_width, page_height, positions, tiles[0:tiles_per_page], 'sheet_%02d.svg' % pageNum)
+		tiles = tiles[tiles_per_page:]
 		pageNum += 1
 	
