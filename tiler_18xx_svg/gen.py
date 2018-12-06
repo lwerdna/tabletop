@@ -35,7 +35,7 @@ def shift(fpath, x, y):
 					m = re.match(r'(.) ([\d\.]+),([\d\.]+)', cmds)
 					assert(m)
 					tmp.append(cmds[0:len(m.group(0))])
-					cmds = cmds[len(m.group(0)):]	
+					cmds = cmds[len(m.group(0)):]
 				# [A]rc absolute: we shift
 				elif cmds[0:2] in ('A '):
 					strlen = re.match(r'A [\d\., ]+', cmds).end()
@@ -50,7 +50,7 @@ def shift(fpath, x, y):
 				elif cmds[0:2] in ('a '):
 					strlen = len(re.match(r'a [-\d\., ]+', cmds).group(0))
 					tmp.append(cmds[0:strlen])
-					cmds = cmds[strlen:]	
+					cmds = cmds[strlen:]
 				# Z is close path
 				elif cmds[0] in ('Z','z'):
 					tmp.append('Z')
@@ -80,7 +80,37 @@ def shift(fpath, x, y):
 	tmp = tmp.replace('</svg>', '')
 	return tmp
 
-def make_page(width, height, positions, tiles, fname):
+def gen_cut_guides(x_, y_):
+	guides = []
+
+	# off the E corner
+	(x,y) = (x_+392, y_+170)
+	guides.append((x,y,x+98,y+170))
+	guides.append((x,y,x+98,y-170))
+	# off the NE corner
+	(x,y) = (x_+294, y_)
+	guides.append((x,y,x+196,y))
+	guides.append((x,y,x-98,y-170))
+	# off the NW corner
+	(x,y) = (x_+98, y_)
+	guides.append((x,y,x+98,y-170))
+	guides.append((x,y,x-196,y))
+	# off the W corner
+	(x,y) = (x_, y_+170)
+	guides.append((x,y,x-98,y-170))
+	guides.append((x,y,x-98,y+170))
+	# off the SW corner
+	(x,y) = (x_+98, y_+340)
+	guides.append((x,y,x-196,y))
+	guides.append((x,y,x+98,y+170))
+	# off the SE corner
+	(x,y) = (x_+294, y_+340)
+	guides.append((x,y,x-98,y+170))
+	guides.append((x,y,x+196,y))
+
+	return guides
+
+def make_page(width, height, guides, positions, tiles, fname):
 	result = ''
 	result += '<?xml version="1.0"?>\n'
 	result += '<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' % \
@@ -91,10 +121,16 @@ def make_page(width, height, positions, tiles, fname):
 	while len(tiles) < len(positions):
 		tiles.append('tile-blank.svg')
 
+	result += '\n<!-- cut guides -->\n'
+	for g in guides:
+		result += '<path d="M %d,%d L %d,%d" stroke-width="1" stroke="#000000" />\n' % (g)
+
 	for (i,position) in enumerate(positions):
+		(x,y) = position
+
 		fpath = os.path.join('.', 'tiles', tiles[i])
 		result += '\n<!-- inserting file %s -->\n' % fpath
-		result += shift(fpath, position[0], position[1])
+		result += shift(fpath, x, y)
 
 	result += '</svg>\n'
 
@@ -105,7 +141,7 @@ def make_page(width, height, positions, tiles, fname):
 if __name__ == '__main__':
 	# layouts
 	(hex_width, hex_height, page_width, page_height, margin_n, margin_e, \
-		tiles_per_page, positions, description) = (0,0,0,0,0,0,0,[],'')
+		tiles_per_page, positions, description, guides) = (0,0,0,0,0,0,0,[],'',[])
 
 	# parse args
 	if len(sys.argv) != 3:
@@ -118,7 +154,7 @@ if __name__ == '__main__':
 		print 'layouts: '
 		print '    layout0: 1.5in flat-to-flat hexes on 8.5x11'
 		sys.exit(-1)
-		
+
 	manifest = sys.argv[1]
 	layoutName = sys.argv[2]
 
@@ -134,6 +170,8 @@ if __name__ == '__main__':
 		margin_n = 110
 		margin_e = 67
 		tiles_per_page = 28
+
+		# tile positions
 		positions = []
 		for i in range(6):
 			positions.append([margin_e + i*hex_width, margin_n + 0])
@@ -145,6 +183,36 @@ if __name__ == '__main__':
 			positions.append([margin_e + hex_width/2 + i*hex_width, margin_n + 3*hex_height])
 		for i in range(6):
 			positions.append([margin_e + i*hex_width, margin_n + 4*hex_height])
+
+		# cut guides
+		for i in [5, 16, 27]:
+			tmp = gen_cut_guides(*positions[i])
+			guides += tmp[0:3]
+			guides.append(tmp[11])
+		for i in [0,1,2,3,4,5]:
+			tmp = gen_cut_guides(*positions[i])
+			guides.append(tmp[3])
+			guides.append(tmp[4])
+			if i!=5:
+				guides.append(tmp[2])
+		for i in [0, 11, 22]:
+			tmp = gen_cut_guides(*positions[i])
+			guides += tmp[5:9]
+		for i in [22, 23, 24, 25, 26, 27]:
+			tmp = gen_cut_guides(*positions[i])
+			guides.append(tmp[9])
+			guides.append(tmp[10])
+			if i!=27:
+				print 'did it!'
+				guides.append(tmp[11])
+		for i in [6,17]:
+			tmp = gen_cut_guides(*positions[i])
+			guides += tmp[6:6+2]
+		for i in [10,21]:
+			tmp = gen_cut_guides(*positions[i])
+			guides += tmp[0:0+2]
+
+
 	else:
 		raise Exception('layout \'%s\' not found' % layout)
 
@@ -152,7 +220,7 @@ if __name__ == '__main__':
 	ET.register_namespace('', 'http://www.w3.org/2000/svg')
 
 	pageNum = 0
-	make_page(page_width, page_height, positions, [], 'sheet_%02d.svg' % pageNum)
+	make_page(page_width, page_height, guides, positions, [], 'sheet_%02d.svg' % pageNum)
 	pageNum += 1
 
 	tiles = []
@@ -160,7 +228,7 @@ if __name__ == '__main__':
 		tiles = map(lambda x: x.strip(), fp.readlines())
 
 	while tiles:
-		make_page(page_width, page_height, positions, tiles[0:tiles_per_page], 'sheet_%02d.svg' % pageNum)
+		make_page(page_width, page_height, guides, positions, tiles[0:tiles_per_page], 'sheet_%02d.svg' % pageNum)
 		tiles = tiles[tiles_per_page:]
 		pageNum += 1
-	
+
