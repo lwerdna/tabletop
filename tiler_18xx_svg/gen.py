@@ -216,7 +216,6 @@ if __name__ == '__main__':
 			tmp = gen_cut_guides(*positions[i])
 			guides += tmp[0:0+2]
 
-
 	else:
 		raise Exception('layout \'%s\' not found' % layout)
 
@@ -232,7 +231,19 @@ if __name__ == '__main__':
 		tiles = map(lambda x: x.strip(), fp.readlines())
 
 	while tiles:
-		make_page(page_width, page_height, guides, positions, tiles[0:tiles_per_page], 'sheet_%02d.svg' % pageNum)
-		tiles = tiles[tiles_per_page:]
+		batch = []
+		while tiles:
+			# blank lines mark page boundaries
+			if not tiles[0] or tiles[0].isspace():
+				tiles = tiles[1:]
+				break
+
+			# add to batch, break when batch is too large
+			batch.append(tiles[0])
+			tiles = tiles[1:]
+			if len(batch) > tiles_per_page:
+				break
+
+		make_page(page_width, page_height, guides, positions, batch, 'sheet_%02d.svg' % pageNum)
 		pageNum += 1
 
