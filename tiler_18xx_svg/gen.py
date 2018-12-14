@@ -149,7 +149,7 @@ if __name__ == '__main__':
 		print '    %s <manifest> <layout>\n' % sys.argv[0]
 		print ''
 		print 'example:'
-		print '    %s 1846.manifest 0\n' % sys.argv[0]
+		print '    %s 1846.manifest layout0\n' % sys.argv[0]
 		print ''
 		print 'layouts: '
 		print '    layout0: 1.5in flat-to-flat hexes on 8.5x11'
