@@ -6,11 +6,9 @@ import sys
 
 import xml.etree.ElementTree as ET
 
-# open an file and shift it +x +y
-def shift(fpath, x, y):
-	print 'opening file: %s' % fpath
-	tree = ET.parse(fpath)
-	root = tree.getroot()
+# shift svg +x +y
+def svg_shift(data, x, y):
+	root = ET.fromstring(data)
 
 	for child in root:
 		# incoming tags are like "{http://www.w3.org/2000/svg}ellipse"
@@ -81,9 +79,33 @@ def shift(fpath, x, y):
 			raise Exception("oh no, dunno what to do with: " + child.tag)
 
 	tmp = ET.tostring(root)
-	tmp = re.sub(r'<svg.*?>', '', tmp)
-	tmp = tmp.replace('</svg>', '')
+	tmp = tmp.replace('.000000', '')
 	return tmp
+
+def tile_get_bleed(data):
+	regex = r'(<path d=" ?[MLZ\d\., ]+" fill="([^"]+)" stroke="[^"]+" (?:stroke-width="1" stroke-linejoin="round"|stroke-linejoin="round" stroke-width="1") ?/>)'
+	m = re.search(regex, data, re.DOTALL)
+	if not m:
+		raise Exception("couldn't find initial tile outliner")
+	(tmp, fill) = m.group(1,2)
+	if fill=='none':
+		return ''
+	tmp = tmp.replace('stroke-width="1"', 'stroke-width="16"')
+	tmp = tmp.replace('stroke="#00000000"', 'stroke="%s"' % fill)
+	return tmp
+
+def svg_dot_outline(data):
+	regex = r'<path d="[MLZ\d\. ]+?" fill="none" stroke="black" ' + \
+			r'(?:stroke-width="1" stroke-linejoin="round"|stroke-linejoin="round" stroke-width="1") ?/>'
+	m = re.search(regex, data)
+	outline = m.group(0)
+	outline_dashed = outline.replace('/>', ' stroke-dasharray="1 4"/>')
+	return data.replace(outline, outline_dashed)
+
+def svg_remove_root(data):
+	data = re.sub(r'<svg.*?>', '', data)
+	data = data.replace('</svg>', '')
+	return data
 
 def gen_cut_guides(x_, y_):
 	guides = []
@@ -121,8 +143,6 @@ def make_page(width, height, guides, positions, tiles, fname):
 	result += '<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' % \
 		(width, height)
 
-	print 'tile: ', tiles
-
 	while len(tiles) < len(positions):
 		tiles.append('tile-blank.svg')
 
@@ -130,14 +150,33 @@ def make_page(width, height, guides, positions, tiles, fname):
 	for g in guides:
 		result += '<path d="M %d,%d L %d,%d" stroke-width="1" stroke="#000000" />\n' % (g)
 
+	result += '\n<!-- tile bleeds -->\n'
+
+	bleeds = []
+
 	for (i,position) in enumerate(positions):
 		(x,y) = position
 
 		fpath = os.path.join('.', 'tiles', tiles[i])
-		result += '\n<!-- inserting file %s -->\n' % fpath
-		result += shift(fpath, x, y)
+		result += '<!-- inserting file %s -->\n' % fpath
+		svg = ''
+		with open(fpath) as fp:
+			svg = fp.read()
+
+		print 'opening ' + fpath
+
+		svg = svg_shift(svg, x, y)
+		bleeds.append(tile_get_bleed(svg))
+		svg = svg_dot_outline(svg)
+		svg = svg_remove_root(svg)
+
+		result += svg
 
 	result += '</svg>\n'
+
+	# bleeds should draw BEFORE tile strokes
+	result = result.replace('<!-- tile bleeds -->\n', '<!-- tile bleeds -->\n' + \
+		'\n'.join(bleeds)+'\n')
 
 	print 'writing ' + fname
 	with open(fname, 'w') as fp:
@@ -222,9 +261,7 @@ if __name__ == '__main__':
 	# go!
 	ET.register_namespace('', 'http://www.w3.org/2000/svg')
 
-	pageNum = 0
-	make_page(page_width, page_height, guides, positions, [], 'sheet_%02d.svg' % pageNum)
-	pageNum += 1
+	pageNum = 1
 
 	tiles = []
 	with open(manifest, 'r') as fp:
