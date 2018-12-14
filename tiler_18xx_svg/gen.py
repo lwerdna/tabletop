@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 # open an file and shift it +x +y
 def shift(fpath, x, y):
-	#print 'opening file: %s' % fpath
+	print 'opening file: %s' % fpath
 	tree = ET.parse(fpath)
 	root = tree.getroot()
 
@@ -64,6 +64,11 @@ def shift(fpath, x, y):
 		elif tag in ['text']:
 			child.set('x', str(float(child.get('x'))+x))
 			child.set('y', str(float(child.get('y'))+y))
+		elif tag in ['line']:
+			child.set('x1', str(float(child.get('x1'))+x))
+			child.set('y1', str(float(child.get('y1'))+y))
+			child.set('x2', str(float(child.get('x2'))+x))
+			child.set('y2', str(float(child.get('y2'))+y))
 		elif tag in ['polygon']:
 			tmp = []
 			for pts in child.get('points').split(' '):
@@ -203,7 +208,6 @@ if __name__ == '__main__':
 			guides.append(tmp[9])
 			guides.append(tmp[10])
 			if i!=27:
-				print 'did it!'
 				guides.append(tmp[11])
 		for i in [6,17]:
 			tmp = gen_cut_guides(*positions[i])
