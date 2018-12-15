@@ -99,7 +99,7 @@ def svg_dot_outline(data):
 			r'(?:stroke-width="1" stroke-linejoin="round"|stroke-linejoin="round" stroke-width="1") ?/>'
 	m = re.search(regex, data)
 	outline = m.group(0)
-	outline_dashed = outline.replace('/>', ' stroke-dasharray="1 4"/>')
+	outline_dashed = outline.replace('/>', ' stroke-dasharray="1 8"/>')
 	return data.replace(outline, outline_dashed)
 
 def svg_remove_root(data):
@@ -185,7 +185,7 @@ def make_page(width, height, guides, positions, tiles, fname):
 if __name__ == '__main__':
 	# layouts
 	(hex_width, hex_height, page_width, page_height, margin_n, margin_e, \
-		tiles_per_page, positions, description, guides) = (0,0,0,0,0,0,0,[],'',[])
+		tiles_per_page, positions, description, guides, dpi) = (0,0,0,0,0,0,0,[],'',[],0)
 
 	# parse args
 	if len(sys.argv) != 3:
@@ -214,6 +214,7 @@ if __name__ == '__main__':
 		margin_n = 110
 		margin_e = 67
 		tiles_per_page = 28
+		dpi = int(page_width/11.0)
 
 		# tile positions
 		positions = []
@@ -261,6 +262,8 @@ if __name__ == '__main__':
 	# go!
 	ET.register_namespace('', 'http://www.w3.org/2000/svg')
 
+	make_page(page_width, page_height, guides, positions, ['tile-blank.svg'], 'sheet_00.svg')
+
 	pageNum = 1
 
 	tiles = []
@@ -284,3 +287,12 @@ if __name__ == '__main__':
 		make_page(page_width, page_height, guides, positions, batch, 'sheet_%02d.svg' % pageNum)
 		pageNum += 1
 
+	# convert all pages to png
+	for i in range(pageNum):
+		cmd = 'convert sheet_%02d.svg sheet_%02d.png' % (i,i)
+		print cmd
+		os.system(cmd)
+
+		cmd = 'convert -units PixelsPerInch sheet_%02d.png -density %d sheet_%02d.png' % (i,dpi,i)
+		print cmd
+		os.system(cmd)
