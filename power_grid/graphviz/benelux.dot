@@ -1,0 +1,29 @@
+graph SemanticFlags {
+	// nodes
+	Haarlem [shape=record, label="{Haarlem|{10|15|20}}"];
+	Zaanstad [shape=record, label="{Zaanstad|{10|15|20}}"];
+	Leiden [shape=record, label="{Leiden|{10|15|20}}"];
+	Amsterdam [shape=record, label="{Amsterdam|{10|15|20}}"];
+	DenHaag [shape=record, label="{Den Haag|{10|15|20}}"];
+	Utrecht [shape=record, label="{Utrecht|{10|15|20}}"];
+	Rotterdam [shape=record, label="{Rotterdam|{10|15|20}}"];
+
+	// edges
+	Haarlem -- Zaanstad[label="2"];
+	Haarlem -- Amsterdam[label="2"];
+	Haarlem -- Leiden[label="3"];
+
+	Zaanstad -- Amsterdam[label="1"];
+	
+	Amsterdam -- Leiden[label="4"];
+	Amsterdam -- Utrecht[label="4"];
+
+	Utrecht -- Leiden[label="4"];
+	Amsterdam -- Rotterdam[label="5"];
+
+	DenHaag -- Leiden[label="2"];
+	DenHaag -- Rotterdam[label="3"];
+
+	Rotterdam -- Leiden[label="3"];
+
+}
