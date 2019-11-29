@@ -281,7 +281,7 @@ if __name__ == '__main__':
 			# add to batch, break when batch is too large
 			batch.append(tiles[0])
 			tiles = tiles[1:]
-			if len(batch) > tiles_per_page:
+			if len(batch) >= tiles_per_page:
 				break
 
 		make_page(page_width, page_height, guides, positions, batch, 'sheet_%02d.svg' % pageNum)
