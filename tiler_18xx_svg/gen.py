@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import os
@@ -38,7 +38,7 @@ def svg_shift(data, x, y):
 				elif cmds[0:2] in ('A '):
 					strlen = re.match(r'A [\d\., ]+', cmds).end()
 					substr = cmds[0:strlen]
-					numbers = map(float, re.findall(r'[\d\.]+', substr))
+					numbers = list(map(float, re.findall(r'[\d\.]+', substr)))
 					numbers[5] += x
 					numbers[6] += y
 					assert len(numbers) == 7
@@ -78,7 +78,7 @@ def svg_shift(data, x, y):
 		else:
 			raise Exception("oh no, dunno what to do with: " + child.tag)
 
-	tmp = ET.tostring(root)
+	tmp = ET.tostring(root).decode('utf-8')
 	tmp = tmp.replace('.000000', '')
 	return tmp
 
@@ -163,7 +163,7 @@ def make_page(width, height, guides, positions, tiles, fname):
 		with open(fpath) as fp:
 			svg = fp.read()
 
-		print 'opening ' + fpath
+		print('opening ' + fpath)
 
 		svg = svg_shift(svg, x, y)
 		bleeds.append(tile_get_bleed(svg))
@@ -178,7 +178,7 @@ def make_page(width, height, guides, positions, tiles, fname):
 	result = result.replace('<!-- tile bleeds -->\n', '<!-- tile bleeds -->\n' + \
 		'\n'.join(bleeds)+'\n')
 
-	print 'writing ' + fname
+	print('writing ' + fname)
 	with open(fname, 'w') as fp:
 		fp.write(result)
 
@@ -189,14 +189,14 @@ if __name__ == '__main__':
 
 	# parse args
 	if len(sys.argv) != 3:
-		print 'usage:'
-		print '    %s <manifest> <layout>\n' % sys.argv[0]
-		print ''
-		print 'example:'
-		print '    %s 1846.manifest layout0\n' % sys.argv[0]
-		print ''
-		print 'layouts: '
-		print '    layout0: 1.5in flat-to-flat hexes on 8.5x11'
+		print('usage:')
+		print('    %s <manifest> <layout>\n' % sys.argv[0])
+		print('')
+		print('example:')
+		print('    %s 1846.manifest layout0\n' % sys.argv[0])
+		print('')
+		print('layouts: ')
+		print('    layout0: 1.5in flat-to-flat hexes on 8.5x11')
 		sys.exit(-1)
 
 	manifest = sys.argv[1]
@@ -268,7 +268,7 @@ if __name__ == '__main__':
 
 	tiles = []
 	with open(manifest, 'r') as fp:
-		tiles = map(lambda x: x.strip(), fp.readlines())
+		tiles = list(map(lambda x: x.strip(), fp.readlines()))
 
 	while tiles:
 		batch = []
@@ -290,9 +290,9 @@ if __name__ == '__main__':
 	# convert all pages to png
 	for i in range(pageNum):
 		cmd = 'convert sheet_%02d.svg sheet_%02d.png' % (i,i)
-		print cmd
+		print(cmd)
 		os.system(cmd)
 
 		cmd = 'convert -units PixelsPerInch sheet_%02d.png -density %d sheet_%02d.png' % (i,dpi,i)
-		print cmd
+		print(cmd)
 		os.system(cmd)
