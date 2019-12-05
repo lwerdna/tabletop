@@ -15,28 +15,23 @@ hex_outline_width = 4
 
 save_ink = True
 
-color_default = (0xee/255.0, 0xf7/255.0, 0xfa/255.0)
+def rgb(value):
+	r = value >> 16
+	g = (value >> 8) & 0xFF
+	b = value & 0xFF
+	return (r/255.0, g/255.0, b/255.0)
+
+color_default = rgb(0xeef7fa)
 #color_default = (0, 0, 0)
 #color_default = (.8, .8, .8)
 color_black = (0, 0, 0)
 color_white = (1, 1, 1)
-color_red = (1, 0, 0)
-
-forest_green = (0x22, 0x8b, 0x22)
-color_green = (0, 0xcc/255.0, 0x66/255.0)
-color_blue = (0x33/255.0, 0x66/255.0, 0xff/255.0)
-color_yellow = (1, 1, 0)
-color_magenta = (1, 0, 1)
-
-color_city = (255, 255, 255)
-#color_city = (0xf9/255.0, 0xC9/255.0, 0xC4/255.0)
-color_industrial = (.3,.3,.3)
-color_water = (0x0, 0xBf/255.0, 0xff)
-color_plains = (0xfe/255.0, 0xfe/255.0, 0xe8/255.0)
-color_forest = (0xd5/255.0, 0xf5/255.0, 0xd5/255.0)
-color_mountain = (0x8c/255.0, 0x84/255.0, 0x7f/255.0)
-
-brown = (0x8b/255.0, 0x45/255.0, 0x13/255.0)
+color_forest = rgb(0x228b22)
+color_water = rgb(0x00bfff)
+color_golden_yellow = rgb(0xffde14)
+color_plains = color_golden_yellow
+#color_plains = (0x9b/255.0, 0x87/255.0, 0x0c/255.0)
+color_indust = rgb(0x8b4513)
 
 ###############################################################################
 # measuring, coordinates
@@ -154,10 +149,18 @@ for i,key in enumerate(forests):
 	lookup[key]['header'] = str(costs[i])
 	lookup[key]['type'] = 'forest'
 
-# 6/6 plains (all plains have cost 1)
-for x in 'G1 I1 F2 H2 J2 N2 A3 C3 G3 I3 K3 M3 O3 B4 D4 F4 J4 L4 N4 C5 E5 G5 I5 K5 M5 O5 Q5 F6 H6 J6 N6 P6 E7 G7 I7 K7 M7 O7 F8 H8 J8 L8 N8 G9 D10 C11 D12 A13 B14 B16 B18 C19 E19 I19 K19 J18 K17 M17 Q17 J16 L16 N16 P16 R16 T16 K15 M15 O15 Q15 R14 T14 T12'.split():
-	lookup[x]['header'] = '1'
-	lookup[x]['type'] = 'plains'
+# 6/6 plains
+coords = 'G1 I1 F2 H2 J2 N2 A3 C3 G3 I3 K3 M3 O3 B4 D4 F4 J4 L4 N4 C5 E5 G5 I5 K5 M5 O5 Q5 F6 H6 J6 N6 P6 E7 G7 I7 K7 M7 O7 F8 H8 J8 L8 N8 G9 D10 C11 D12 A13 B14 B16 B18 C19 E19 I19 K19 J18 K17 M17 Q17 J16 L16 N16 P16 R16 T16 K15 M15 O15 Q15 R14 T14 T12'.split()
+# most plains have cost 1
+coord2cost = {coord:1 for coord in coords}
+# exceptions
+coord2cost['K15'] = 2
+coord2cost['M15'] = 2
+coord2cost['Q15'] = 2
+coord2cost['R14'] = 2
+for (coord,cost) in coord2cost.items():
+	lookup[coord]['header'] = str(cost)
+	lookup[coord]['type'] = 'plains'
 
 ###############################################################################
 # funcs
@@ -294,16 +297,16 @@ def drawGameHex(cr, key):
 
 	# draw the shape icon depending on type
 	if lookup[key]['type'] == 'forest':
-		drawTriangle(cr, (x+20,y-hex_rr+12), 4, forest_green, forest_green)
+		drawTriangle(cr, (x+20,y-hex_rr+12), 4, color_forest, color_forest)
 	if lookup[key]['type'] == 'plains':
-		drawSquare(cr, (x+20,y-hex_rr+12), 4, (1,1,0), (1,1,0))
+		drawSquare(cr, (x+20,y-hex_rr+12), 4, color_plains, color_plains)
 	if lookup[key]['type'] == 'mountain':
 		drawHex(cr, (x+20,y-hex_rr+12), 6, (0,0,1), (0,0,1))
 	if lookup[key]['type'] == 'city':
 		drawCircle(cr, (x+20,y-hex_rr+12), 4, (1,0,0), (1,0,0))
 	if lookup[key]['type'] == 'industrial':
-		drawCircle(cr, (x+20,y-hex_rr+12), 4, brown, brown)
-		drawCircle(cr, (x+4,y-hex_rr+12), 4, brown, brown)
+		drawCircle(cr, (x+20,y-hex_rr+12), 4, color_indust, color_indust)
+		drawCircle(cr, (x+4,y-hex_rr+12), 4, color_indust, color_indust)
 
 ###############################################################################
 # main
