@@ -59,5 +59,5 @@ for row in range(rows):
         #image(fname, (x,y+1))
         
 # done
-saveImage('tileSheet_11x85.png')
+saveImage('tileSheet.png')
 
