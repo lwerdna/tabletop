@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import math
 import cairo
 from PIL import Image
 
-DEBUG = False
+DEBUG = True
 
 margin_x = 9
 margin_y = 97
@@ -185,7 +185,7 @@ def drawCrossHatch(cr, x, y, width, height, color):
 	start = int(x - height)
 	end = int(x + width + height)
 
-	for k in xrange(start, end, 12):
+	for k in range(start, end, 12):
 		cr.move_to(k, y)
 		cr.line_to(k + height, y+height)
 		cr.move_to(k, y+height)
@@ -219,9 +219,9 @@ def hexRgb(r,g,b):
 
 def drawHex_KEY(cr, key):
 	[x,y] = key2coords(key)
-	print '%s -> (%d,%d)' % (key, x, y),
+	print('%s -> (%d,%d)' % (key, x, y),)
 	[x,y] = coords2pos(x,y)
-	print '-> (%d,%d)' % (x, y)
+	print('-> (%d,%d)' % (x, y))
 
 	ratio = math.sqrt(3)/2.0
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import math
@@ -260,9 +260,9 @@ def hexRgb(r,g,b):
 
 def drawGameHex(cr, key):
 	[x,y] = key2coords(key)
-	print '%s -> (%d,%d)' % (key, x, y),
+	print('%s -> (%d,%d)' % (key, x, y),)
 	[x,y] = coords2pos(x,y)
-	print '-> (%d,%d)' % (x, y)
+	print('-> (%d,%d)' % (x, y))
 
 	ratio = math.sqrt(3)/2.0
 
