@@ -1,8 +1,12 @@
-margin = 128
-margin = 128
+from tile import width as twidth
+from tile import height as theight
 
-width = margin + 256*8 + margin
-height = margin + 256*9 + margin
+print('using tile width: %d' % twidth)
+width = 2486
+height = 1920
+
+margin = 256
+
 size(width, height)
 
 fill(1)
@@ -15,69 +19,45 @@ def cut_guides(x, y):
     stroke(0)
     strokeWidth(1)
     
+    margin_mod = .75 * margin 
+    
     # intersecting at bottom left corner
-    line((0, y), (margin, y)) # W mark
-    line((width-margin, y), (width, y)) # E mark
-    line((x, 0), (x, margin)) # S mark
-    line((x, height-margin), (x, height)) # N mark
+    line((0, y), (margin_mod, y)) # W mark
+    line((width-margin_mod, y), (width, y)) # E mark
+    line((x, 0), (x, margin_mod)) # S mark
+    line((x, height-margin_mod), (x, height)) # N mark
     
     # intersecting at top right corner
-    line((0, y+256), (margin, y+256)) # W mark
-    line((width-margin, y+256), (width, y+256)) # E mark
-    line((x+256, 0), (x+256, margin)) # S mark
-    line((x+256, height-margin), (x+256, height))
+    line((0, y+twidth), (margin_mod, y+twidth)) # W mark
+    line((width-margin_mod, y+twidth), (width, y+twidth)) # E mark
+    line((x+twidth, 0), (x+twidth, margin_mod)) # S mark
+    line((x+twidth, height-margin_mod), (x+twidth, height))
      
-# straights   
-y = y_start
-for col in range(3):
-    x = x_start
-    
-    for row in range(8): 
+rows = int((height-2*margin)/twidth)
+cols = int((width-2*margin)/twidth)
+
+queue = []
+queue += ['tileA.png']*24
+queue += ['tileB.png']*24
+queue += ['tileBlank.png']*(cols+1)
+queue += ['tileC.png']*24     
+
+for row in range(rows):
+    for col in range(cols):
+        x = margin + col*twidth
+        y = margin + row*twidth
+        
+        if not queue:
+            continue
+        fname = queue.pop()
+            
         cut_guides(x, y)
             
-        image('tileA.png', (x+1,y))
-        image('tileA.png', (x+1,y+1))
-        image('tileA.png', (x,y))
-        image('tileA.png', (x,y+1))
-                        
-        x += 256
+        #image(fname, (x+1,y))
+        #image(fname, (x+1,y+1))
+        image(fname, (x,y))
+        #image(fname, (x,y+1))
         
-    y += 256
-
-y += 0
-
-# elbows
-for col in range(3):
-    x = x_start
-    
-    for row in range(8): 
-        cut_guides(x, y)
-            
-        image('tileB.png', (x+1,y))
-        image('tileB.png', (x+1,y+1))
-        image('tileB.png', (x,y))
-        image('tileB.png', (x,y+1))
-                        
-        x += 256
-        
-    y += 256
-
-# tees
-for col in range(3):
-    x = x_start
-    
-    for row in range(8): 
-        cut_guides(x, y)
-            
-        image('tileC.png', (x+1,y))
-        image('tileC.png', (x+1,y+1))
-        image('tileC.png', (x,y))
-        image('tileC.png', (x,y+1))
-                        
-        x += 256
-        
-    y += 256
-
 # done
-saveImage('tileSheet.png')
+saveImage('tileSheet_11x85.png')
 

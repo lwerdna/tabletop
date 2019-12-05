@@ -1,20 +1,20 @@
-width = 256
-height = 256
+from tile import *
+
 size(width, height)
 
 # background
-fill(0xff, 0xff, 0)
+fill(1, 1, 0)
 rect(0, 0, width, height)
 
 # track background
-stroke(255, 255, 255)
-strokeWidth(1.4*(width/8))
-line((width/2,0), (width/2,height))
+stroke(1)
+strokeWidth(width_track_bg)
+line((xcenter, 0), (ycenter, height))
 
 # track foreground
 stroke(0)
-strokeWidth(width/8)
-line((width/2,0), (width/2,height))
+strokeWidth(width_track)
+line((xcenter, 0), (ycenter,height))
 
 # done
 saveImage('tileA.png')
