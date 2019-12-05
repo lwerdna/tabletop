@@ -5,7 +5,7 @@ import math
 import cairo
 from PIL import Image
 
-DEBUG = True
+DEBUG = False
 
 margin_x = 9
 margin_y = 97
@@ -156,10 +156,18 @@ for i,key in enumerate(forests):
 	#lookup[key]['footer'] = '+$2'
 	lookup[key]['fill'] = color_forest
 
-# 6/6 plains (all plains have cost 1)
-for x in 'G1 I1 F2 H2 J2 N2 A3 C3 G3 I3 K3 M3 O3 B4 D4 F4 J4 L4 N4 C5 E5 G5 I5 K5 M5 O5 Q5 F6 H6 J6 N6 P6 E7 G7 I7 K7 M7 O7 F8 H8 J8 L8 N8 G9 D10 C11 D12 A13 B14 B16 B18 C19 E19 I19 K19 J18 K17 M17 Q17 J16 L16 N16 P16 R16 T16 K15 M15 O15 Q15 R14 T14 T12'.split():
-	lookup[x]['header'] = '-1x'
-	lookup[x]['fill'] = color_plains
+# 6/6 plains
+coords = 'G1 I1 F2 H2 J2 N2 A3 C3 G3 I3 K3 M3 O3 B4 D4 F4 J4 L4 N4 C5 E5 G5 I5 K5 M5 O5 Q5 F6 H6 J6 N6 P6 E7 G7 I7 K7 M7 O7 F8 H8 J8 L8 N8 G9 D10 C11 D12 A13 B14 B16 B18 C19 E19 I19 K19 J18 K17 M17 Q17 J16 L16 N16 P16 R16 T16 K15 M15 O15 Q15 R14 T14 T12'.split()
+# most plains have cost 1
+coord2cost = {coord:1 for coord in coords}
+# exceptions
+coord2cost['K15'] = 2
+coord2cost['M15'] = 2
+coord2cost['Q15'] = 2
+coord2cost['R14'] = 2
+for (coord,cost) in coord2cost.items():
+	lookup[coord]['header'] = '-' + str(cost)
+	lookup[coord]['fill'] = color_plains
 
 ###############################################################################
 # funcs
