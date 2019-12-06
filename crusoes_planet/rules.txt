@@ -1,74 +1,138 @@
----- page 0 (front cover)
+---- page 1 (front cover)
 
----- page 1 (left inside cover)
+---- page 2 (left inside cover)
+
 Contents
-Introduction............3
 
-.....6
+Introduction...............................3
+  ?........................................?
+  ?........................................?
+  ?........................................?
+Basic Game.................................6
+  Description of Components................6
+  General Course of Play...................6
+  Winning..................................7
+  Sequence of Play.........................7
+  Government and Violence..................8
+  Ending The Game.........................12
+Introductory Scenarios....................14
+  Tribal Capitalism.......................14
+  Tribal Socialism........................14
+  Tribal Communism........................14
+  Traditional Economy.....................15
+  Crusoe's Economy (Minimalist)...........18
+  Hobbesian State of Nature (Minimalist)..18
+  Utopian Economy (Minimalist)............18
+Advanced Rules............................19
+  Glossary................................19
+  ?.......................................19
+  ?.......................................22
+  ?.......................................23
+  ?.......................................24
+Advanced Scenarios........................25
+  ?.......................................25
+  ?.......................................25
+  ?.......................................25
+  ?.......................................27
+  ?........................................?
+  ?........................................?
+  ?........................................?
+Advanced Tack-on Modules..................28
+  Optional Rules..........................35
+  More than Eight Players.................35
+  Market Victory Conditions...............35
+  Market Values for Diamonds..............35
+  Alternative Punishments.................36
+Mad Jack Random scenario Tables...........38
+Designer's Notes..........................40
 
+---- page 3
+Introduction
 
-Advanced Rules.........19
-  Glossary.............19
-                       19
-                       22
-                       23
-                       24
-Advanced Scenarios.....25
-                       25
-                       25
-                       25
-                       27
+Colonization Robot for Universal Settler Organization and Eco-Planning
 
-Advanced Tack-on
- Modules...............28
+(construction worker map graphic)
 
-Optional Rules.........35
- More than Eight Players
+---- page 4
 
+---- page 5
 
-Mad Jack Random scenario
- Tables................38
-
-Designer's Notes.......40
-
-----left page
-
-----right page
 A word on our Philosophy
 
 (steam graphic)
 
---- left page
+--- page 6
 
- * * *
- Description of Components
+* * *
+Description of Components
 
- * * *
- General Course of Play
+Map - The map is two 11x17 sheets, and should bbe laid flat on the table so that the trakcs line is up, with enough space around it for each player to have a score sheet and some commodity tokens.
+Pawns -
+Score Pad -
+Turn Order Cards -
+Player Aid Card -
+Quick Start Card -
+Rules -
+Dice -
 
---- right page
-  * * *
-  Winning
+* * *
+General Course of Play
 
-  * * *
-  Sequence of Play
+--- page 7
+* * *
+Winning
+
+Players gain victory Points for maintaining a high quality fo life, and lose them for maintaining a low one. Quality of life is measured in food, ???, and leisure. The points earned for these things for any given cycle are summarized on the VP Chart.
+
+A positive VP total at the end of the game is required for victory; any number of players can win or lose. The farther a score divates from zero the greater the level of success/failure. Players' scores relative to one another have no bearing on the outcome.
+Whiel the agove is realistic enough, (the majority of us are more concerned with our own happiness than with the unhappiness ???) according to Adam Smith ???
+
+* * *
+Sequence of Play
+
+I. The players begin each cycle at the Crash Site. Turn Order Cards numbered from one to the total number of players is shuffled and dealth out to determine play order for the coming cycle. Each player in turn selects which path he will traverse in the coming cycle.
+
+II. In play order each player takes his turn. This step is repeated until all players reach the Market. During his turn the player proceeds as follows:
+ 
+ A. If the player is already at teh Market, and some other players are not, then he collects one unit of Leisure.
+ B. If the player is not yet at the Market he rolls one die and advanced his pawn that distance along the path he is following.
+
+  1. If this leaves the player.
+
+---- page 8
+
+* * *
 
 
-
-----left page
-
-  * * *
+* * *
  Government & Violence
 
-----right page
+ * * * 
+Path Icons
+
+---- page 9
+
+Radio Signal (Citizen Band, Military, Top 40)
+The player gains one Radio
+
+---- page 8
+
+* * *
+???
+
+* * *
+ Government & Violence
+
+---- page 9
 
 ... "ZZT" EVEN WIT THE
 
 (karate graphic)
 
+* * *
 Battles
 
-----left page
+---- page 10
 
  * * *
 Voting
@@ -81,14 +145,25 @@ Drunk    Points
 
 Food   Victory
 Eaten   Points
+0      -10(D)
+1      -10(S)
+2      -10(H)
+3      -5
+4      -4
+5      -2
+6      0
+7      +1
+8      +2
+9      +3
+10     +4
 
-
-----right page
+---- page 11
 
 Victory Points
 
 Food   Balanced
 Types    Diet    Malnourished
+-----  --------  ------------
 0         0       -3
 1        +1       -2
 2        +2       -1
@@ -96,31 +171,46 @@ Types    Diet    Malnourished
 4        +4       +1
 5        +5       +2
 
-----left page
+Leisure   Victory
+Enjoyed   Points
+ 0        -3
+ 1        0
+ 2        +2
+ 3        +3
+4,5       +4
+6,7       +5
+per +2    +1
+
+Privation
+
+---- page 12
 * * *
 Preservation Rolls
+
+Food   Keeps
+Type   On
+----   -----
+Apple  1-5
+Banana 1
+Egg    1-5
+Fish   1
+Grapes 1-3
 
 * * *
 Ending the Game
 
+Die    Frequency
+Roll   Monitorred
+-----  ------------
+1      Citizen Band
+2,3    Military
+4,5,6  Top 40
 
-Die  Frequency
-Roll Monitorred
-1     Citizen Band
-2,2   Military
-?,?,? Top 40
+---- page 13
 
-----right page
+(radio "on the air!" graphic)
 
-???
-
-
-----right page
-Introduction
-
-Fifteen men on a
-
-----left page
+---- page 14
 
 Introductory Scenarios
 
@@ -130,22 +220,32 @@ Tribal Capitalism
 * * *
 Tribal Socialism
 
-----right page
+* * *
+Tribal Communism
+
+---- page 15
 
 ...for the cycle, takes one item of his
 
 * * *
 Traditional Economy
 
----- page 18 (left)
+(knight with lance and shield graphic)
 
-Crusoe's Economy (Minimalis)
+---- page 18
 
-????
+* * *
+Crusoe's Economy (Minimalist)
+
+* * *
+Hobbesian State of Nature (Minimalist)
+
+* * *
+Utopian Economy (Minimalist)
 
 (couples dancing graphic)
 
----- page 19 (right)
+---- page 19
 
 Advanced Rules
 
@@ -154,70 +254,125 @@ Glossary
     * * *
 Monetary Markets
 
----- page 20 (left)
+---- page 20
 
 Commodity Markets Subphase
 
+Tax Subphase
+
 Wholesale Subphase
 
----- page 21 (right)
+---- page 21
 
 Example of Wholesale Market: With 5 units of water avail
 
 Retail Subphase
 
----- page 22 (left)
+---- page 22
 
+* * *
 Government Types
+
+Athenian Democracy
+
+Dictatorship
 
 Representative Democracy
 
----- page 23 (right)
+Bureauocracy
+
+---- page 23
 
 Constitutional Hybrid
 
 Example of Bureaucracy: In the "National Capitalism" scenario the government
 
----- page 24 (left)
-          * * *
+---- page 24
+* * *
 Advanced Scenario Selection
 
----- page 25 (right)
+---- page 25
 
 Advanced Scenarios
 
 National Capitalism
 
+Welfare Capitalism
+
+This is an expansion of "National Capitalism" ?? the beginning of the taxation subphase the 
+
+(empty pockets graphic)
+
+Class Warfare Capitalism
+
+This is an expansion of "National Capitalism", designed to reflect the class warfare theories of Thorstein Veblen (among others). At the beginning of the game one player is selected at random to be the Capitalist and he is given four Diamonds and loses 12 VP. Of the remaining???
+
 Example: The government sets the page for each Radio Signal at $10, and sets the tax burden of the Ant at $1...
 
----- page 26 (left)
+---- page 26
 
 Excerpt:
 Example of CEO Transfer
 
----- page 27 (right)
+---- page 27
 
      * * *
 State Capitalism
 
----- page 28 (left)
+* * *
+Market Socialism
+
+* * *
+Governmental Socialism
+
+---- page 28
 
 Advanced Tack-On Modules
 
 Economic Modules
 
----- page 29 (right)
+???
 
----- page 30 (left)
+(presenter pointer chart graphic)
+
+Corporation
+
+---- page 29
+
+
+
+Guild Oligarchy
+
+Examle of Guilds: Bob drew ???
+
+Paternalistic Economy
+
+Third World Country
+
+This tack-on explores the economic conditions in a developing country when other more-developed nations are attempted to take ???
+
+---- page 30v
 
 Base Resource Banana Apple Grape Egg Fish Spear Diamond
 ------------- ------ ----- ----- --- ---- ----- -------
        Banana      -  10/1  15/1 6/1  4/1   8/1    30/1
         Apple    1/1     -   4/1
+            ?
+            ?
+            ?
+         Fish
+        Spear    1/1  4/1    6/1 2/1 2/1   -       12/1
+      Diamond    1/3  1/1    2/1 1/2 1/2   1/1      -
 
----- page 31 (right)
+Discrimination Modules
+
+---- page 31
 
 Race
+
+(mother and baby graphic)
+
+Gender
 
 ----left page
 
@@ -248,7 +403,7 @@ Libertarianism
 
 Objectivist Model
 
-----right page ---
+---- page 35
 
 Optional Rules
 
@@ -256,13 +411,31 @@ More Than Eight Players
 
 Advanced Scenarios
 
----- page 38 (left)
+---- page 36
+
+Alternative Punishments
+
+(treadmill graphic)
+
+Crippling
+
+Slavery
+
+(pirate treasure chest graphic)
+
+---- page ??
+
+Exile
+
+---- page 38
 
 Mad Jack Random scenario
  Tables
 
----- page 39 (right)
+---- page 39
 
 ---- page 40 (back cover?)
 
 Designer's Notes
+
+
