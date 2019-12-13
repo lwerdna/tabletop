@@ -1,4 +1,5 @@
-all: map_dot.png map_circo.png map_fdp.png map_neato.png map_twopi.png map_osage.png map_patchwork.png map_dot.svg
+#all: map_dot.png map_circo.png map_fdp.png map_neato.png map_twopi.png map_osage.png map_patchwork.png map_dot.svg
+all: map_dot.png map_dot.svg
 
 map_dot.svg: map.dot
 	dot -Tsvg map.dot -o map_dot.svg
