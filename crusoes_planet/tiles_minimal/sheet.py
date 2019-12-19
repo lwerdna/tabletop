@@ -58,7 +58,7 @@ bglookup = {
 }
 
 queue = []
-if False:
+if True:
     queue += ['water_tile_p75in.png']*10
     queue += ['apple_tile_p75in.png']*20
     queue += ['banana_tile_p75in.png']*20
@@ -109,7 +109,6 @@ for page_num in range(100):
     print('saving %s' % fname)
     saveImage(fname)
     
-    break
     if not queue:
         break
         
