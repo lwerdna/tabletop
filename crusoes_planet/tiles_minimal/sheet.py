@@ -52,13 +52,13 @@ bglookup = {
     'spear_tile_p75in.png':rgbhex(0xdeb887),
     'diamond_tile_p75in.png':rgbhex(0xFFFFFF),
     'leisure_tile_p75in.png':rgbhex(0xe6beff),
-    'radio_cb_tile_p75in.png':rgb(255,128,128),
-    'radio_mil_tile_p75in.png':rgb(255,128,128),
-    'radio_t40_tile_p75in.png':rgb(255,128,128),
+    'radio_cb_tile_p75in.png':rgbhex(0xff8c00),
+    'radio_mil_tile_p75in.png':rgbhex(0xff8c00),
+    'radio_t40_tile_p75in.png':rgbhex(0xff8c00),
 }
 
 queue = []
-if True:
+if False:
     queue += ['water_tile_p75in.png']*10
     queue += ['apple_tile_p75in.png']*20
     queue += ['banana_tile_p75in.png']*20
@@ -109,6 +109,7 @@ for page_num in range(100):
     print('saving %s' % fname)
     saveImage(fname)
     
+    break
     if not queue:
         break
         
