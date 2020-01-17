@@ -29,4 +29,4 @@ graph.dot: companies.csv graph_companies.py
 	./graph_companies.py > graph.dot
 
 clean:
-	rm -rf graph*.png
+	rm -rf graph*.png graph.dot

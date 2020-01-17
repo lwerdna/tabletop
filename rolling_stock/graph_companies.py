@@ -1,24 +1,7 @@
 #!/usr/bin/env python
 
-data = {}
-with open('companies.csv') as fp:
-	for line in fp.readlines():
-		line = line.strip()
-		if not line or line.startswith('#'):
-			continue
-		(company,color,facevalue,min_,max_,income,synergies) = line.split(',')
-
-		syndict = {}
-		for comp_plus_bonus in synergies.split(' '):
-			(comp_d, bonus) = comp_plus_bonus.split('+')
-			syndict[comp_d] = int(bonus)
-
-		data[company] = {	'color': color,
-							'facevalue': int(facevalue),
-							'min': int(min_),
-							'max': int(max_),
-							'income': int(income),
-							'synergies': syndict	}
+import helpers
+data = helpers.load_company_data()
 
 print('graph foo {')
 
