@@ -68,7 +68,12 @@ companies = helpers.load_company_data()
 yields = [companies[x]['income']/companies[x]['facevalue']*100.0 for x in companies]
 yield_min = min(yields)
 yield_range = 50 - yield_min
-headers = ['ticker','face value', 'buy/sell range', 'income', 'yield', 'synergies']
+
+margins = [100*(companies[x]['max'] - companies[x]['facevalue']) / companies[x]['facevalue'] for x in companies]
+margin_min = min(margins)
+margin_range = 50 - margin_min
+
+headers = ['ticker','face value', 'price', 'income', 'yield', 'margin', 'synergies']
 arr = []
 for ticker in sorted(companies.keys(), key=lambda x:companies[x]['facevalue']):
 	data = companies[ticker]
@@ -81,8 +86,16 @@ for ticker in sorted(companies.keys(), key=lambda x:companies[x]['facevalue']):
 	if yield_ >= 50:
 		yield_color = palette[-1]
 	else:
-		yield_color = palette[int(255 * (yield_-yield_min)/yield_range)]
+		yield_color = palette[int(255 * (yield_-15)/35)]
 	row.append('<span style="background-color:%s">%.02f%%</span>' % (yield_color, yield_))
+	# margin
+	margin = 100*(data['max'] - data['facevalue'])/data['facevalue']
+	if margin >= 50:
+		margin_color = palette[-1]
+	else:
+		margin_color = palette[int(255 * (margin-15)/35)]
+	row.append('%d (<span style="background-color:%s">%.02f%%</span>)' % (data['max'] - data['facevalue'], margin_color, margin))
+
 	#synstr = '%d:' % len(data['synergies'])
 	synstr = ''
 	for (syncomp, synamt) in data['synergies'].items():
