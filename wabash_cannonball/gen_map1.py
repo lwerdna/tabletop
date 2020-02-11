@@ -347,4 +347,4 @@ if DEBUG:
 	write('final image size: %dx%d (ratio:%f)' % \
 	  (width_px, height_px, 1.0*width_px/height_px), color_black, 128, 32)
 
-surface.write_to_png("/tmp/quick.png")
+surface.write_to_png("./map1.png")

@@ -26,13 +26,14 @@ color_blue = (0x33/255.0, 0x66/255.0, 0xff/255.0)
 color_yellow = (1, 1, 0)
 color_magenta = (1, 0, 1)
 
-color_city = (255, 255, 255)
+#color_city = (255, 255, 255)
+color_city = (192/255.0, 192/255.0, 192/255.0)
 #color_city = (0xf9/255.0, 0xC9/255.0, 0xC4/255.0)
 color_industrial = (.3,.3,.3)
 color_water = (0x0, 0xBf/255.0, 0xff)
-color_plains = (0xfe/255.0, 0xfe/255.0, 0xe8/255.0)
+color_plains = (251/255.0, 237/255.0, 218/255.0)
 color_forest = (0xd5/255.0, 0xf5/255.0, 0xd5/255.0)
-color_mountain = (0x8c/255.0, 0x84/255.0, 0x7f/255.0)
+color_mountain = (182/255.0, 119/255.0, 79/255.0)
 
 ###############################################################################
 # measuring, coordinates
@@ -135,7 +136,7 @@ for i,key in enumerate(industrials):
 	lookup[key]['text'] = names[i]
 	lookup[key]['fill'] = color_industrial
 	lookup[key]['header'] = '-%dx' % costs[i]
-	lookup[key]['footer'] = '+table'
+	lookup[key]['footer'] = '+?'
 	lookup[key]['text_color'] = color_white
 
 # 4/6 mountains
@@ -143,7 +144,7 @@ mountains = 'S7 T8 Q9 U9 N10 P10 R10 T10 M11 Q11 J12 L12 N12 K13 M13 J14'.split(
 costs = [3, 3, 4, 3, 3, 4, 4, 3, 4, 4, 3, 4, 2, 4, 2, 3]
 assert len(mountains) == len(costs)
 for i,key in enumerate(mountains):
-	lookup[key]['header'] = '-%d' % costs[i]
+	lookup[key]['header'] = '-%d' % costs[i] # no 'x', only 1 company on mountains, forrests
 	lookup[key]['footer'] = '+1 +2'
 	lookup[key]['fill'] = color_mountain
 
@@ -152,7 +153,7 @@ forests = 'Q7 P8 R8 K9 O9 F10 H10 J10 L10 E11 G11 K11 S11 F12 H12 P12 R12 C13 E1
 costs = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 1, 3, 2, 4, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 assert(len(forests) == len(costs))
 for i,key in enumerate(forests):
-	lookup[key]['header'] = '-%d' % costs[i]
+	lookup[key]['header'] = '-%d' % costs[i] # no 'x', only 1 company on mountains, forrests
 	#lookup[key]['footer'] = '+$2'
 	lookup[key]['fill'] = color_forest
 
@@ -166,7 +167,7 @@ coord2cost['M15'] = 2
 coord2cost['Q15'] = 2
 coord2cost['R14'] = 2
 for (coord,cost) in coord2cost.items():
-	lookup[coord]['header'] = '-' + str(cost)
+	lookup[coord]['header'] = '-%dx' % cost
 	lookup[coord]['fill'] = color_plains
 
 ###############################################################################
@@ -330,4 +331,4 @@ if DEBUG:
 	write('final image size: %dx%d (ratio:%f)' % \
 	  (width_px, height_px, 1.0*width_px/height_px), color_black, 128, 32)
 
-surface.write_to_png("/tmp/quick.png")
+surface.write_to_png("./map2.png")
