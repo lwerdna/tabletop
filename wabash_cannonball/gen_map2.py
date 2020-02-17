@@ -109,7 +109,7 @@ names = ['Chicago', 'Indianapolis', 'South Bend', 'Fort Wayne', 'Cincinnati', \
   'Toledo', 'Columbus', 'Ashland', 'Cleveland', 'Youngstown', 'Charleston', \
   'Clarksburg', 'Roanoake', 'Buffalo', 'Altoona', 'Lynchburg', 'Martinsburg', \
   'Syracuse', 'Harrisburg', 'Richmond', 'Ithaca', 'Binghampton', 'Albany']
-costs = [3, 1, 2, 1, 2, 2, 1, 2, 1, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2 +1 +2]
+costs = [3, 1, 2, 1, 2, 2, 1, 2, 1, 2, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2]
 bonuses = ['+7 +0', '+2 +2', '+1 +2', '+1 +2', '+2 +2', '+1 +1', '+1 +1', '+2 +1', '+2 +2', '+1 +1', '+2 +1', '+1 +1', '+1 +1', '+3 +2', '+1 +1', '+1 +1', '+1 +1', '+1 +2', '+1 +1', '+2 +1', '+1 +1', '+1 +1', '+1 +2']
 for i,city in enumerate(cities):
 	lookup[city]['text'] = names[i]
