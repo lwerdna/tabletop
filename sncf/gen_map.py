@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import math
 import cairo
 from PIL import Image
 
-DEBUG = True
+DEBUG = False
 
 margin_x = 4
 margin_y = 4
@@ -42,7 +42,7 @@ hex_rr = hex_h/2
 width_px = margin_x + hex_r + (n_hex_ew-1)*1.5*hex_r + hex_r + margin_x
 height_px = margin_y + (n_hex_ns+1) * hex_rr + margin_y+1
 [width_px, height_px] = map(int, map(math.ceil, [width_px, height_px]))
-print "pixel width/height = %d/%d" % (width_px, height_px)
+print("pixel width/height = %d/%d" % (width_px, height_px))
 
 # eg: 'A1' -> [0,0] (map coordinates)
 def key2coords(key):
@@ -186,9 +186,9 @@ def hexRgb(r,g,b):
 
 def drawHex_KEY(cr, key):
 	[x,y] = key2coords(key)
-	print '%s -> (%d,%d)' % (key, x, y),
+	print('%s -> (%d,%d)' % (key, x, y), end='')
 	[x,y] = coords2pos(x,y)
-	print '-> (%d,%d)' % (x, y)
+	print('-> (%d,%d)' % (x, y))
 
 	ratio = math.sqrt(3)/2.0
 
@@ -238,6 +238,6 @@ for x in range(n_hex_ew):
 			continue
 		drawHex_KEY(cr, key)
 
-print 'final image size: %dx%d (ratio:%f' % (width_px, height_px, 1.0*width_px/height_px)
+print('final image size: %dx%d (ratio:%f' % (width_px, height_px, 1.0*width_px/height_px))
 
-surface.write_to_png("/tmp/quick.png")
+surface.write_to_png("map.png")
