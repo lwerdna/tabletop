@@ -1,0 +1,162 @@
+{
+  "info": {
+    "title": "Irish Gauge",
+    "subtitle": "18xx-Maker Test File",
+    "designer": "",
+    "background": "",
+    "currency": "$#",
+    "marketTokens": 1
+  },
+  "wip": true,
+  "shareTypes": {
+    "default": [
+      {
+        "quantity": 1,
+        "label": "Test Certificate",
+        "percent": 20,
+        "shares": 1
+      }
+    ]
+  },
+  "companies": [
+    {
+      "name": "Cork, Bandon & South Coast Railway",
+      "abbrev": "CBSC",
+      "color": "yellow",
+      "shareType": "default",
+      "shares": [
+        {
+          "quantity": 1,
+          "label": "$7",
+          "labelColor": "white",
+          "tokenCount": 1,
+          "price": 160
+        },
+        {
+          "quantity": 1,
+          "label": "$12",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$17",
+          "labelColor": "white",
+          "tokenCount": 1
+        }
+      ]
+    },
+    {
+      "name": "Waterford, Limerick & Western Railway",
+      "abbrev": "WLW",
+      "color": "purple",
+      "shareType": "default",
+      "shares": [
+        {
+          "quantity": 1,
+          "label": "$5",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$10",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$15",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+		{
+          "quantity": 1,
+          "label": "$19",
+          "labelColor": "white",
+          "tokenCount": 1
+        }
+      ]
+    },
+	{
+      "name": "Belfast & County Down Railway",
+      "abbrev": "BCD",
+      "color": "orange",
+      "shareType": "default",
+      "shares": [
+        {
+          "quantity": 1,
+          "label": "$8",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$13",
+          "labelColor": "white",
+          "tokenCount": 1
+        }
+      ]
+    },
+    {
+      "name": "Great Southern & Western Railway",
+      "abbrev": "GSW",
+      "color": "lightBlue",
+      "shareType": "default",
+      "shares": [
+        {
+          "quantity": 1,
+          "label": "$4",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$9",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$14",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+		{
+          "quantity": 1,
+          "label": "$18",
+          "labelColor": "white",
+          "tokenCount": 1
+        }
+      ]
+    },
+    {
+      "name": "Midland Great Western Railway",
+      "abbrev": "MGW",
+      "color": "red",
+      "shareType": "default",
+      "shares": [
+        {
+          "quantity": 1,
+          "label": "$6",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$11",
+          "labelColor": "white",
+          "tokenCount": 1
+        },
+        {
+          "quantity": 1,
+          "label": "$16",
+          "labelColor": "white",
+          "tokenCount": 1
+        }
+      ]
+    }
+  ],
+  "id": "18Test",
+  "slug": "18Test"
+}
